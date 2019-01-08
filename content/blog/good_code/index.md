@@ -1,0 +1,32 @@
+---
+title: How to Write Good Code
+date: '2019-01-08T22:07:03.284Z'
+---
+
+Yesterday I submitted what was probably my worst code over the past 12 months. That must not happen again. I'm human, I can learn from my mistakes... right?
+
+# Don't Commit After Midnight
+
+I should probably find that _How I Met Your Mother_ quote that talked about good things not happening after some specific time (2am?). Anyways... there are studies that show that over the course of a normal day, even if you slept well, your cognitive abilities eventually decline. At 8pm you're pretty much the equivalent of slightly inebriated simply because it's late. The commit I mentioned in the first paragraph was done at around 2am in the morning. I was probably about as far from peak performance as someone who is really, really far from peak performance.
+
+Our society values the worker who's still in the office long after everyone else has left. That person may not be capable of doing anything productive anymore, and might even do more harm than good, but no one cares about that I guess. Know when you're reached your limit for the day and then focus on recovery. Just like athletes don't work out 20h a day, you shouldn't code that much either. It's not going to work. You'll write terrible code and you'll regret it. Just go to bed, and come back refreshed.
+
+# Take a Walk
+
+I had some of my best ideas when I miss the tram and have to walk home, which takes about 15min. It is during those minutes, without a computer, without notifications, music, reddit or hackernews, that I can let my mind wander. The emptiness is often filled with random crap but sometimes it also unleashes creative problem solving skills that are surprisingly elusive in the office.
+
+One of the main benefits of leaving your PC for a while is that it lets you take a step back, zoom out and really see the big picture. Sometimes I start trying to solve a problem in a certain way and then I double down and brute force my way to a solution even though a totally different approach might have made way more sense had I only considered it. You won't reach those conclusion if you don't let your mind roam freely for a while.
+
+# No Multitasking
+
+Many of my coworkers wear headphones all day long. That makes perfect sense since many of them sit in open offices. But isolating yourself from your surroundings only to listen to songs with lyrics won't help. If you need some sort of background noise to focus then I'd suggest giving something like Brain.fm a try. Music that can enhance producitivy has to follow certain patterns (range of beats per minute, no lyrics, somewhat repetitive and predictable, etc.) and I'd pretty sure that most of what people listen to doesn't meet those criteria. Even if you're convinced that it helps, do you really want to treat music as mere background noise? Best case scenario is that you notice and follow the songs at least during the catchiest part of the chorus but apart from that you won't really remember much. Music is too beautiful to be one blip in the general office cacophony. So do yourself, and your music a favor by giving some whitenoise or procedural music generator a try. Also it goes without saying that watching Netflix while working is just ridiculous.
+
+# Take Regular Breaks
+
+This was already mentioned in the prior paragraphs but regular, short breaks can do wonders for your mental energy. Avoid bashing your head against a wall at all costs and keep up your creative energy so you can focus on solving problems instead of just implementing whatever the ticket says.
+
+# Skip Stack Overflow
+
+Stack Overflow (SO) has probably done more harm than good to my code so far. Most of the accepted answers that I come across are rather short and there's only so much one can explain in one or two paragraphs. So you most likely end up copy pasting a solution you don't fully understand and that's both dangerous and just not very efficient. Next time you need to solve a related problem you'll need to find another SO post to copy verbatim, since you didn't understand what you did in the first place.
+
+Being able to read documentation and piece things together on your own is a valuable skill, so practice that. Like all rules this there are of course exceptions. But in general I've learned much more from looking at the hackage documentation, the node API docs or the rust stdlib docs, rather than SO.
