@@ -1,5 +1,5 @@
 ---
-title: How to Write Good Code
+title: How not to Write Crap Code
 date: '2019-01-08T22:07:03.284Z'
 ---
 
