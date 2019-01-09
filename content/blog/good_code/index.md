@@ -3,11 +3,13 @@ title: How not to Write Crap Code
 date: '2019-01-08T22:07:03.284Z'
 ---
 
-Yesterday I submitted what was probably my worst code over the past 12 months. That must not happen again. I'm human, I can learn from my mistakes... right?
+Yesterday I submitted what was probably my worst code over the past 12 months. Not because I used the wrong data structure or called something on `undefined`, but simply because I was the worst possible version of myself. That must not happen again. I'm human, I can learn from my mistakes... right?
 
 # Don't Commit After Midnight
 
-I should probably find that _How I Met Your Mother_ quote that talked about good things not happening after some specific time (2am?). Anyways... there are studies that show that over the course of a normal day, even if you slept well, your cognitive abilities eventually decline. At 8pm you're pretty much the equivalent of slightly inebriated simply because it's late. The commit I mentioned in the first paragraph was done at around 2am in the morning. I was probably about as far from peak performance as someone who is really, really far from peak performance.
+In _Why We Sleep_ Matthew Walker mentions a study that compared two groups: One group didn't sleep for a single night, the other had reached the alcohol limit for driving (page 156-157). In a subsequent concentration test, both groups performed about the same. The author of the book then compares this to getting up at 7am, and eventually driving a car at 2am, after having been awake for 19 hours. In other words, at the end of a normal day your concentration could very well be as bad as if you were drunk enough to not being allowed to drive.
+
+The code I mentioned in the beginnig was committed at around 2am in the morning. It's no surprise that my ability to focus was seriously impaired and in the context of studies like the above it's pretty crazy to think you can write code in the middle of the night (unless you get up in the afternoon). _(Isn't there a *How I Met Your Mother* quote about nothing good every happening after 2am or something?)_
 
 Our society values the worker who's still in the office long after everyone else has left. That person may not be capable of doing anything productive anymore, and might even do more harm than good, but no one cares about that I guess. Know when you're reached your limit for the day and then focus on recovery. Just like athletes don't work out 20h a day, you shouldn't code that much either. It's not going to work. You'll write terrible code and you'll regret it. Just go to bed, and come back refreshed.
 
@@ -19,7 +21,7 @@ One of the main benefits of leaving your PC for a while is that it lets you take
 
 # No Multitasking
 
-Many of my coworkers wear headphones all day long. That makes perfect sense since many of them sit in open offices. But isolating yourself from your surroundings only to listen to songs with lyrics won't help. If you need some sort of background noise to focus then I'd suggest giving something like Brain.fm a try. Music that can enhance producitivy has to follow certain patterns (range of beats per minute, no lyrics, somewhat repetitive and predictable, etc.) and I'd pretty sure that most of what people listen to doesn't meet those criteria. Even if you're convinced that it helps, do you really want to treat music as mere background noise? Best case scenario is that you notice and follow the songs at least during the catchiest part of the chorus but apart from that you won't really remember much. Music is too beautiful to be one blip in the general office cacophony. So do yourself, and your music a favor by giving some whitenoise or procedural music generator a try. Also it goes without saying that watching Netflix while working is just ridiculous.
+Many of my coworkers wear headphones all day long. That makes perfect sense since many of them sit in open offices. But isolating yourself from your surroundings only to listen to songs with lyrics won't help. If you need some sort of background noise to focus then I'd suggest giving something like Brain.fm a try. Music that can enhance producitivy has to follow certain patterns (range of beats per minute, no lyrics, somewhat repetitive and predictable, etc.) and I'm pretty sure that most of what people listen to doesn't meet those criteria. Even if you're convinced that it helps, do you really want to treat music as mere background noise? Best case scenario is that you notice and follow the songs at least during the catchiest part of the chorus but apart from that you won't really remember much. Music is too beautiful to be one blip in the general office cacophony. So do yourself, and your music a favor by giving some whitenoise or procedural music generator a try. Also it goes without saying that watching Netflix while working is just ridiculous.
 
 # Take Regular Breaks
 
