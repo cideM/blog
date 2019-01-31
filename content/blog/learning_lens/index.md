@@ -21,7 +21,7 @@ fmap f (Storey x  a) = Storey x $ fmap f a
 -- ^ f a is a function applied to a. a is (f a) from above.
 ```
 
-The two code snippets are about 2 viewport heights apart (I added the comments). Stuff like this puts me in instant rage mode. It's like someone is stabbing me with a tiny :knife: - it won't kill me but it still inflicts a lot of pain on a constant basis. Everytime I see an `f` I need to check if it's a function or a functor. It's especially confusing if, as here, what was called `f a` (functor) is now `a`, and `f` is just a function.
+The two code snippets are about 2 viewport heights apart (I added the comments). Stuff like this puts me in instant rage mode. It's like someone is stabbing me with a tiny knife - it won't kill me but it still inflicts a lot of pain on a constant basis. Everytime I see an `f` I need to check if it's a function or a functor. It's especially confusing if, as here, what was called `f a` (functor) is now `a`, and `f` is just a function.
 
 Occasionally I see people refer to `f a` from a type signature as `fa` in data land. That's nice. It makes the connection between both very clear, while still being general and abstract. Let's try again:
 
@@ -76,7 +76,7 @@ or
 _1 modifierFn (first, second) = (, second) <$> modifierFn first
 ```
 
-The type checker is happy, at least that I got right. The tuple section came from hlint by the way. I do know that it's a thing and it's not hard to use but I put that in the "stabbing with a tiny :knife:" category. Layers of syntactic sugar eventually add up to obscure code (insert quote about Golang here).
+The type checker is happy, at least that I got right. The tuple section came from hlint by the way. I do know that it's a thing and it's not hard to use but I put that in the "stabbing with a tiny knife" category. Layers of syntactic sugar eventually add up to obscure code (insert quote about Golang here).
 
 The above function doesn't feel right, because I'm sure there's a clever way to make it ~~less explicit and harder to understand~~ more idiomatic.
 

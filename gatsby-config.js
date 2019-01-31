@@ -28,6 +28,22 @@ module.exports = {
       options: {
         plugins: [
           {
+            resolve: 'gatsby-remark-emojis',
+            options: {
+              active: true,
+              // Add a custom css class
+              // class: 'emoji-icon',
+              // Select the size (available size: 16, 24, 32, 64)
+              size: 24,
+              // Add custom styles
+              styles: {
+                display: 'inline',
+                margin: '0',
+                'margin-top': '1px',
+              },
+            },
+          },
+          {
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 590,
