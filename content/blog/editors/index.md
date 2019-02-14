@@ -1,5 +1,5 @@
 ---
-title: Choosing a Text Editor
+title: Editors
 date: '2018-09-10T22:12:03.284Z'
 ---
 
