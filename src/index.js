@@ -14,47 +14,32 @@ const readdir = util.promisify(fs.readdir)
 const outputPath = path.join(__dirname, '..', 'public')
 const blogContentPath = path.join(__dirname, '..', 'content', 'blog')
 
-const template = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>HTML5 boilerplate – all you really need…</title>
-	<!--[if IE]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-</head>
-
-<body id="home">
-
-  <h1>HTML5 boilerplate</h1>
-  
-  <ol>
-    {{#slugs}}
-    <li><a href="posts/{{filename}}/index.html">{{date}} {{title}}</a></li>
-    {{/slugs}}
-  </ol>
-</body>
-</html>
-
-`
+// TODO: Copy assets for post
+// Add link to github
+// Back button for post
+// Syntax highlighting
+// Night mode?
+const indexTemplate = fs.readFileSync('index.mst', 'utf-8')
 
 const run = async () => {
   const blogPosts = await readdir(blogContentPath)
 
   await Promise.all(
-    // A post is a directory with at least an index.md
-    blogPosts.map(async dirName => {
-      const fileContent = fs.readFileSync(
-        path.resolve(blogContentPath, dirName, 'index.md'),
+    // A post is a directory with at least an index.md. The name of the
+    // directory is the name of the post (not the title!)
+    blogPosts.map(async postName => {
+      const post = fs.readFileSync(
+        path.resolve(blogContentPath, postName, 'index.md'),
         'utf-8'
       )
+      // Extract front matter
       const {
         content,
         data: { title, date },
-      } = matter(fileContent)
+      } = matter(post)
 
       try {
+        // Markdown -> HTML
         const html = await remark()
           .use(recommended)
           .use(emoji)
@@ -64,7 +49,7 @@ const run = async () => {
         return {
           title,
           date,
-          filename: dirName,
+          filename: postName,
           html,
         }
       } catch (error) {
@@ -73,6 +58,8 @@ const run = async () => {
     })
   )
     .then(slugs => {
+      // TODO: Copy assets
+      // Write one .html file per markdown post
       slugs.forEach(async ({ filename, html }) => {
         fs.mkdirSync(path.join(outputPath, 'posts', filename), {
           recursive: true,
@@ -86,7 +73,8 @@ const run = async () => {
       return slugs
     })
     .then(slugs => {
-      const rendered = Mustache.render(template, { slugs })
+      // Render index.html with links to posts
+      const rendered = Mustache.render(indexTemplate, { slugs })
       fs.writeFileSync(path.join(outputPath, 'index.html'), rendered)
     })
     .catch(err => console.error(err))
