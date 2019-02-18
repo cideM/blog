@@ -146,7 +146,7 @@ type SpecializedLens
 
 Because of the return type `f (Either t1 t2)` applying `l2 fn` to `s2` is not enough. That's merely running a single Lens which gives a functor one level deep, but we need two levels. `Left <$> l1 fn s1` does that. GG.
 
-## All is Vain :bomb:
+## All is Vain
 
 Wow. The next one made me question pursuing Haskell any further. I had to check Github, realized that I didn't understand the solutions with `liftA2` and I didn't even try to understand `&&&`. That meant I had to actually solve it and I needed to do it with as simple as code as possible. So pretty much the opposite of the bonus points.
 
@@ -164,7 +164,7 @@ That was at least one step forward.
 
 I also knew that I somehow needed to take the function just called `f` in the snippet _taken from the tutorial_ and apply the lens `l` to that function and the source `s`. I need to do `l f' s`, and somehow turn the given `f` into my `f'`.
 
-A lens takes an `a -> f b` but I only had `a -> b`. I've read and written enough Haskell to know that this smells like `lift`. But e.g., `liftA2` makes an unlifted function `a -> b -> c` work on `f a` and `f b` and `f c`. I however had an `a` as an input but needed an `f something` as an output. :thinking: And I also know that `a -> f a` is simply a constructor. Something something `(,)` and `lift`?
+A lens takes an `a -> f b` but I only had `a -> b`. I've read and written enough Haskell to know that this smells like `lift`. But e.g., `liftA2` makes an unlifted function `a -> b -> c` work on `f a` and `f b` and `f c`. I however had an `a` as an input but needed an `f something` as an output. And I also know that `a -> f a` is simply a constructor. Something something `(,)` and `lift`?
 
 I took the low road and reverse engineered the `liftA2` solutions out there. I arrived at
 
