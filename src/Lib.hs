@@ -79,11 +79,10 @@ makeIndexHtml posts =
 extractSlugs ::
      MonadIO m => Path Rel Dir -> Path Rel Dir -> m (Either AppException Slug)
 extractSlugs postsDir postDir = do
-  markdown <-
-    liftIO . readFile . Path.toFilePath $
-    postsDir </> postDir </> [relfile|./index.md|]
+  let input = postsDir </> postDir </> [relfile|./index.md|]
+  markdown <- liftIO . readFile $ Path.toFilePath input
   case parse frontmatterParser "" markdown of
-    Left e -> return . Left . ExtractSlugE . Text.pack $ show e
+    Left e -> return . Left $ ExtractSlugE input (Text.pack $ show e)
     Right v ->
       return . Right $
       Slug
