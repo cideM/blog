@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"> <head>
 	<meta charset="utf-8">
 	<title>HTML5 boilerplate – all you really need…</title>
 	<link rel="stylesheet" href="css/style.css">
@@ -14,7 +13,7 @@
 	<h1>HTML5 boilerplate</h1>
     <ol>
     {{#posts}}
-    <li><a href="{{filename}}">{{frontmatter.date}}: {{frontmatter.title}}</a></li>
+    <li><a href="/{{postDir}}index.html">{{frontmatter.date}}: {{frontmatter.title}}</a></li>
     {{/posts}}
     </ol>
 </body>

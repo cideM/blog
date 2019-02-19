@@ -32,6 +32,7 @@ dependencies:
   - directory
   - path
   - safe-exceptions
+  - cmark
 
 library:
   source-dirs: src

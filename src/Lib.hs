@@ -3,13 +3,14 @@
 
 module Lib
   ( frontmatterParser
-  , makeIndex
+  , makeIndexHtml
   , Frontmatter
-  , TOCPost
+  , Slug(..)
   ) where
 
 import           Control.Monad.IO.Class (MonadIO)
-import           Data.Aeson             ((.=))
+import           Data.Aeson             (defaultOptions, fieldLabelModifier,
+                                         genericParseJSON, genericToJSON, (.=))
 import qualified Data.Aeson             as Aeson
 import qualified Data.ByteString.Char8  as Char8
 import           Data.Text              (Text)
@@ -24,30 +25,34 @@ import qualified Text.Mustache          as Mustache
 type Parser = Parsec Void String
 
 data Frontmatter = Frontmatter
-  { title :: !Text
-  , date  :: !Text
+  { _title :: !Text
+  , _date  :: !Text
   } deriving (Generic, Show)
 
-instance FromJSON Frontmatter
+-- All this genericParseJSON business is so aeson parses title but the
+-- record field getter is _title
+instance FromJSON Frontmatter where
+  parseJSON = genericParseJSON defaultOptions {fieldLabelModifier = drop 1}
 
-instance ToJSON Frontmatter
+instance ToJSON Frontmatter where
+  toJSON = genericToJSON defaultOptions {fieldLabelModifier = drop 1}
 
-data TOCPost = TOCPost
-  { frontmatter :: !Frontmatter
-  , filename    :: !Text
+data Slug = Slug
+  { _frontmatter               :: !Frontmatter
+    -- ^ Contains title and date, delimited by ---
+  , _postDir                   :: !Text
+    -- ^ The name of the blog post (not the title from the frontmatter) is the
+    -- name of the root folder holding index.md (and possibly assets)
+  , _contentWithoutFrontmatter :: !Text
+    -- ^ Content without first 4 lines
   } deriving (Generic, Show)
 
-instance FromJSON TOCPost
+instance FromJSON Slug where
+  parseJSON = genericParseJSON defaultOptions {fieldLabelModifier = drop 1}
 
-instance ToJSON TOCPost
+instance ToJSON Slug where
+  toJSON = genericToJSON defaultOptions {fieldLabelModifier = drop 1}
 
-{-
----
-title: Foo
-date: Something
----
-gives Frontmatter { title: "Foo", date: "Something" }
--}
 frontmatterParser :: Parser Frontmatter
 frontmatterParser = do
   chars <- sep *> manyTill anySingle sep
@@ -58,7 +63,7 @@ frontmatterParser = do
     sep = string "---" >> eol
 
 -- | Generate index.html with table of contents of links to individual posts
-makeIndex :: MonadIO m => [TOCPost] -> m Lazy.Text
-makeIndex posts =
+makeIndexHtml :: MonadIO m => [Slug] -> m Lazy.Text
+makeIndexHtml posts =
   Mustache.compileMustacheFile "./src/index.mustache" >>= \template ->
     return $ Mustache.renderMustache template $ Aeson.object ["posts" .= posts]
