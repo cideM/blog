@@ -5,58 +5,26 @@
 module Main where
 
 import qualified CMark
-import           Control.Exception.Safe
-import           Control.Monad          ((>=>))
-import           Data.Text              (Text)
-import qualified Data.Text              as Text
-import qualified Data.Text.IO           as TIO
-import qualified Data.Text.Lazy         as Lazy
-import           Lib                    (Slug (..), frontmatterParser,
-                                         makeIndexHtml)
-import           Path                   (Dir, Path, Rel, reldir, relfile, (</>))
+import           Control.Monad    ((>=>))
+import qualified Data.Text        as Text
+import qualified Data.Text.IO     as TIO
+import qualified Data.Text.Lazy   as Lazy
+import           Lib              (Slug (..), extractSlugs, makeIndexHtml)
+import           Path             (Dir, Path, Rel, reldir, relfile, (</>))
 import qualified Path
-import qualified System.Directory       as Dir
-import qualified System.Directory       as Directory
-import qualified System.IO              as IO
-import           Text.Megaparsec
+import qualified System.Directory as Dir
+import qualified System.Directory as Directory
+import qualified System.IO        as IO
 
 -- TODO: Maybe handle IO errors? Not sure with all the writeFile and readFile
-
-blogPostDir :: Path Rel Dir
-blogPostDir = [reldir|./content/blog/|]
-
-data AppException
-  = ExtractSlugE Text
-  | UnknownException
-  deriving (Show)
-
-instance Exception AppException
-
--- | Extract information necessary to create the links to all posts in the
--- index.html file
-extractSlugs ::
-     Path Rel Dir
-  -> IO (Either AppException Slug)
-extractSlugs postsDir = do
-  markdown <-
-    readFile . Path.toFilePath $
-    blogPostDir </> postsDir </> [relfile|./index.md|]
-  case parse frontmatterParser "" markdown of
-    Left e -> return . Left . ExtractSlugE . Text.pack $ show e
-    Right v ->
-      return . Right $
-      Slug
-        { _frontmatter = v
-        , _postDir = Text.pack $ Path.toFilePath postsDir
-        , _contentWithoutFrontmatter =
-            Text.unlines . drop 4 . Text.lines $ Text.pack markdown
-        }
+postsDir :: Path Rel Dir
+postsDir = [reldir|./content/blog/|]
 
 main :: IO ()
 main = do
-  posts <- Directory.listDirectory $ Path.toFilePath blogPostDir
+  posts <- Directory.listDirectory $ Path.toFilePath postsDir
   -- ^ Each post is a directory
-  sequence <$> traverse (Path.parseRelDir >=> extractSlugs) posts >>= \case
+  sequence <$> traverse (Path.parseRelDir >=> extractSlugs postsDir) posts >>= \case
     Left e -> print e
     Right slugs -> do
       let outDir = [reldir|./public/|]
