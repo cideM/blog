@@ -4,12 +4,16 @@
 
 module Lib
   ( frontmatterParser
-  , makeIndexHtml
+  , makePage
   , Frontmatter
   , Slug(..)
   , extractSlugs
+  , makeToc
+  , Body(..)
+  , makePost
   ) where
 
+import qualified CMark
 import           Control.Monad.IO.Class (MonadIO, liftIO)
 import           Data.Aeson             (defaultOptions, fieldLabelModifier,
                                          genericParseJSON, genericToJSON, (.=))
@@ -59,6 +63,16 @@ instance FromJSON Slug where
 instance ToJSON Slug where
   toJSON = genericToJSON defaultOptions {fieldLabelModifier = drop 1}
 
+newtype Body = Body
+  { _bodyContent :: Lazy.Text
+  } deriving (Generic, Show)
+
+instance FromJSON Body where
+  parseJSON = genericParseJSON defaultOptions {fieldLabelModifier = drop 1}
+
+instance ToJSON Body where
+  toJSON = genericToJSON defaultOptions {fieldLabelModifier = drop 1}
+
 frontmatterParser :: Parser Frontmatter
 frontmatterParser = do
   chars <- sep *> manyTill anySingle sep
@@ -68,11 +82,24 @@ frontmatterParser = do
   where
     sep = string "---" >> eol
 
--- | Generate index.html with table of contents of links to individual posts
-makeIndexHtml :: MonadIO m => [Slug] -> m Lazy.Text
-makeIndexHtml posts =
-  Mustache.compileMustacheFile "./src/index.mustache" >>= \template ->
+makeToc :: MonadIO m => [Slug] -> m Lazy.Text
+makeToc posts =
+  Mustache.compileMustacheFile "./src/toc.mustache" >>= \template ->
     return $ Mustache.renderMustache template $ Aeson.object ["posts" .= posts]
+
+-- | Generate index.html with table of contents of links to individual posts
+makePage :: MonadIO m => Body -> m Lazy.Text
+makePage body =
+  Mustache.compileMustacheFile "./src/page.mustache" >>= \template ->
+    return $ Mustache.renderMustache template $ Aeson.toJSON body
+
+makePost :: MonadIO m => Slug -> m Lazy.Text
+makePost slug =
+  let html = CMark.commonmarkToHtml [] (_contentWithoutFrontmatter slug)
+   in Mustache.compileMustacheFile "./src/post.mustache" >>= \template ->
+        return $
+        Mustache.renderMustache template $
+        Aeson.object ["title" .= _title (_frontmatter slug), "postHtml" .= html]
 
 -- | Extract information necessary to create the links to all posts in the
 -- index.html file
