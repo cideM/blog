@@ -24,23 +24,12 @@ function Bio() {
               style={{
                 marginRight: rhythm(1 / 2),
                 marginBottom: 0,
-                minWidth: 50,
+                width: 80,
+                height: 80,
                 borderRadius: `100%`,
               }}
             />
-            <p
-              style={{
-                margin: 0,
-              }}
-            >
-              Written by <strong>{author}</strong> who spends most of his time
-              with Javascript, Haskell and Rust.
-              {` `}
-              <a href={`https://twitter.com/${social.twitter}`}>
-                You should probably not follow him on Twitter
-              </a>{' '}
-              nor on <a href={`https://github.com/cideM`}>Github</a>
-            </p>
+            <a href={`https://github.com/cideM`}>GitHub</a>
           </div>
         )
       }}
@@ -52,7 +41,7 @@ const bioQuery = graphql`
   query BioQuery {
     avatar: file(absolutePath: { regex: "/profile-pic.jpg/" }) {
       childImageSharp {
-        fixed(width: 50, height: 50) {
+        fixed(width: 80, height: 80, quality: 95) {
           ...GatsbyImageSharpFixed
         }
       }

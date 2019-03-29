@@ -1,6 +1,6 @@
 ---
 title: How not to Write Crap Code
-date: '2019-01-08T22:07:03.284Z'
+date: "2019-01-08"
 ---
 
 Yesterday I submitted what was probably my worst code over the past 12 months. Not because I used the wrong data structure or called something on `undefined`, but simply because I was the worst possible version of myself. That must not happen again. I'm human, I can learn from my mistakes... right?

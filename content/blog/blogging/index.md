@@ -1,6 +1,6 @@
 ---
 title: Blogging as a Motivational Tool
-date: '2018-09-22T22:12:03.284Z'
+date: "2018-09-22"
 ---
 
 I love programming. But why don't I program more? I like to believe that I've
