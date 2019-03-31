@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
+import favicon from '../assets/favicon.ico'
+import appleTouchIcon from '../assets/apple-touch-icon.png'
 
 function SEO({ description, lang, meta, keywords, title }) {
   return (
@@ -17,6 +19,10 @@ function SEO({ description, lang, meta, keywords, title }) {
             }}
             title={title}
             titleTemplate={`%s | ${data.site.siteMetadata.title}`}
+            link={[
+                { rel: 'icon', type: 'image/png', href: `${favicon}` },
+                { rel: 'apple-touch-icon', type: 'image/png', href: `${appleTouchIcon}` }
+            ]}
             meta={[
               {
                 name: `description`,

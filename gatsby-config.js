@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: `Quixotic Adjunct`,
+    title: `fbrs`,
     author: `Florian Beeres`,
     description: `Mostly Javascript, Haskell and Rust`,
     siteUrl: `https://fbrs.io`,
@@ -79,7 +79,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Quixotic Adjunct`,
+        name: `fbrs`,
         short_name: `fbrs`,
         start_url: `/`,
         background_color: `#ffffff`,
@@ -89,6 +89,7 @@ module.exports = {
       },
     },
     `gatsby-plugin-offline`,
+    `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-typography`,

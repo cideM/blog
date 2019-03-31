@@ -1,5 +1,7 @@
 import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
+import Anchor from './Anchor'
+import styled, { css } from 'styled-components'
 import Image from 'gatsby-image'
 
 import { rhythm } from '../utils/typography'
@@ -12,24 +14,33 @@ function Bio() {
         const { author, social } = data.site.siteMetadata
         return (
           <div
-            style={{
-              display: `flex`,
-              alignItems: `center`,
-              marginBottom: rhythm(1),
-            }}
+            css={`
+              display: flex;
+              align-items: center;
+              margin-bottom: ${rhythm(1)};
+            `}
           >
+            <div
+              css={`
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+              `}
+            >
+              haskell rust javascript
+              <Anchor href={`https://github.com/cideM`}>GitHub</Anchor>
+            </div>
             <Image
               fixed={data.avatar.childImageSharp.fixed}
               alt={author}
-              style={{
-                marginRight: rhythm(1 / 2),
-                marginBottom: 0,
-                width: 80,
-                height: 80,
-                borderRadius: `100%`,
-              }}
+              css={`
+                margin-left: ${rhythm(0.5)};
+                width: 50px;
+                height: 50px;
+                margin-bottom: 0;
+                border-radius: 10000px;
+              `}
             />
-            <a href={`https://github.com/cideM`}>GitHub</a>
           </div>
         )
       }}
@@ -41,7 +52,7 @@ const bioQuery = graphql`
   query BioQuery {
     avatar: file(absolutePath: { regex: "/profile-pic.jpg/" }) {
       childImageSharp {
-        fixed(width: 80, height: 80, quality: 95) {
+        fixed(width: 50, height: 50, quality: 95) {
           ...GatsbyImageSharpFixed
         }
       }

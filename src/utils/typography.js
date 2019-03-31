@@ -1,23 +1,25 @@
 import Typography from 'typography'
-import Wordpress2016 from 'typography-theme-wordpress-2016'
 
-Wordpress2016.overrideThemeStyles = () => {
-  return {
-    'a.gatsby-resp-image-link': {
-      boxShadow: `none`,
+const typography = new Typography({
+  baseFontSize: '18px',
+  baseLineHeight: 1.4,
+  googleFonts: [
+    {
+      name: 'Roboto',
+      styles: ['400', '400i', '700'],
     },
-  }
-}
-
-delete Wordpress2016.googleFonts
-
-const typography = new Typography(Wordpress2016)
-
-// Hot reload typography in development.
-if (process.env.NODE_ENV !== `production`) {
-  typography.injectStyles()
-}
+    {
+      name: 'Roboto Mono',
+      styles: ['400', '400i', '700'],
+    },
+  ],
+  bodyFontFamily: ['Roboto'],
+  headerFontFamily: ['Roboto'],
+})
 
 export default typography
-export const rhythm = typography.rhythm
-export const scale = typography.scale
+
+const rhythm = typography.rhythm
+const scale = typography.scale
+
+export { rhythm, scale }

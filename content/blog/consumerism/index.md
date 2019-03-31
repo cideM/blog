@@ -1,6 +1,7 @@
 ---
 title: Don't Buy Useless Crap
 date: "2018-08-15"
+publish: true
 ---
 
 I recently bought new sneakers, the Adidas Deerupt in light gray (I'm sure the actual color name is a lot fancier). The light color contrasts nicely with my mostly dark pants. I can walk in them, they're pretty breathable and should I ever decide to start an Instagram career, my shoes won't hold me back. Great qualities, I know.

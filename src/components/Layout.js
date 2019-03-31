@@ -1,69 +1,82 @@
 import React from 'react'
-import { Link } from 'gatsby'
-
+import Link from './Link'
+import Anchor from './Anchor.js'
+import styled, { ThemeProvider } from 'styled-components'
+import Bio from './Bio.js'
 import { rhythm, scale } from '../utils/typography'
+
+const theme = {
+  colors: {
+    brand: '#e53985',
+    text: {
+      dimmed: '#888888',
+    },
+  },
+}
+
+const RootHeader = styled.h1`
+  margin-top: 0;
+`
+
+const PostHeader = styled.h3`
+  margin-top: 0;
+`
+
+const RootLink = ({ children }) => (
+  <Link
+    style={{
+      boxShadow: `none`,
+      textDecoration: `none`,
+      color: `inherit`,
+    }}
+    to={`/`}
+  >
+    {children}
+  </Link>
+)
+
+const Header = ({ isRootPath, children }) =>
+  isRootPath ? (
+    <div
+      css={`
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      `}
+    >
+      <RootHeader>
+        <RootLink>{children}</RootLink>
+      </RootHeader>
+      <Bio />
+    </div>
+  ) : (
+    <PostHeader>
+      <RootLink>{children}</RootLink>
+    </PostHeader>
+  )
 
 class Layout extends React.Component {
   render() {
     const { location, title, children } = this.props
     const rootPath = `${__PATH_PREFIX__}/`
-    let header
 
-    if (location.pathname === rootPath) {
-      header = (
-        <h1
-          style={{
-            marginTop: 0,
-          }}
-        >
-          <Link
-            style={{
-              boxShadow: `none`,
-              textDecoration: `none`,
-              color: `inherit`,
-            }}
-            to={`/`}
-          >
-            {title}
-          </Link>
-        </h1>
-      )
-    } else {
-      header = (
-        <h3
-          style={{
-            marginTop: 0,
-            marginBottom: rhythm(-1),
-          }}
-        >
-          <Link
-            style={{
-              boxShadow: `none`,
-              textDecoration: `none`,
-              color: `inherit`,
-            }}
-            to={`/`}
-          >
-            {title}
-          </Link>
-        </h3>
-      )
-    }
     return (
-      <div
-        style={{
-          marginLeft: `auto`,
-          marginRight: `auto`,
-          maxWidth: rhythm(24),
-          padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
-        }}
-      >
-        {header}
-        {children}
-        <footer>
-          © 2018, Built with <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-      </div>
+      <ThemeProvider theme={theme}>
+        <div
+          css={`
+            margin-left: auto;
+            margin-right: auto;
+            max-width: ${rhythm(24)};
+            padding: ${rhythm(1.5)} ${rhythm(3 / 4)};
+          `}
+        >
+          <Header isRootPath={location.pathname === rootPath}>{title}</Header>
+          {children}
+          <footer>
+            © 2018, Built with <Anchor href="https://www.gatsbyjs.org">Gatsby</Anchor>
+          </footer>
+        </div>
+      </ThemeProvider>
     )
   }
 }

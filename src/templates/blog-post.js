@@ -1,10 +1,37 @@
 import React from 'react'
-import { Link, graphql } from 'gatsby'
-
+import { graphql } from 'gatsby'
+import Link from '../components/Link'
 import Bio from '../components/Bio'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
+import styled from 'styled-components'
 import { rhythm, scale } from '../utils/typography'
+
+const Post = styled.div`
+  & code {
+    font-family: Roboto Mono, monospace;
+  }
+
+  & pre {
+    min-width: 100%;
+    float: left;
+    margin-bottom: ${rhythm(1)};
+    padding-top: ${rhythm(0.5)};
+    padding-bottom: ${rhythm(0.5)};
+  }
+
+  & .gatsby-highlight {
+    overflow: auto;
+  }
+
+  a {
+    color: ${props => props.theme.colors.brand};
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`
 
 class BlogPostTemplate extends React.Component {
   render() {
@@ -26,22 +53,30 @@ class BlogPostTemplate extends React.Component {
         >
           {post.frontmatter.date}
         </p>
-        <div dangerouslySetInnerHTML={{ __html: post.html }} />
+        <Post dangerouslySetInnerHTML={{ __html: post.html }} />
         <hr
           style={{
             marginBottom: rhythm(1),
           }}
         />
-        <Bio />
+        <div
+          css={`
+            display: flex;
+            justify-content: flex-end;
+          `}
+        >
+          <Bio />
+        </div>
 
         <ul
-          style={{
-            display: `flex`,
-            flexWrap: `wrap`,
-            justifyContent: `space-between`,
-            listStyle: `none`,
-            padding: 0,
-          }}
+          css={`
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0;
+            list-style: none;
+          `}
         >
           <li>
             {previous && (

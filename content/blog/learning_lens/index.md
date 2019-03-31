@@ -1,6 +1,7 @@
 ---
 title: Learning Haskell Lenses
 date: '2019-01-12'
+publish: false
 ---
 
 I often hate Haskell but at the same time I can't stop learning it because it would feel like giving up. Learning new things in Haskell is often one of the most frustrating experiences I can think of. I stare at code that seems completely impenetrable and the category theory jargon, together with super descriptive single letter variables, feels like a concerted effort at obfuscation. Use it in papers, when discussing among equals, but not in tutorials. You've invested effort into creating a tutorial, why not go the extra mile and use descriptive names for us sub-9000 IQ folks. /rant

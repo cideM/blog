@@ -1,6 +1,7 @@
 ---
 title: Editors
 date: "2018-09-10"
+publish: false
 ---
 
 _Almost everything in this post applies to Vim as well, but since I use Neovim
@@ -20,7 +21,7 @@ In my opinion, that kind of customizability is at the heart of what makes
 Neovim so special (I assume the same applies to Emacs). Comparing Neovim to
 other editors based on a checklist of features is therefore missing the point.
 Neovim's syntax highlighting is lacking. Its built-in completion is a blocking
-operation. The included file explorer comes with some gotchas. It doesn't
+operation. The included file explorer comes with tons of gotchas. It doesn't
 have a plugin manager. Very few commands give you any visual feedback until you
 execute them. So why should anyone put up with all of that?
 
@@ -85,7 +86,7 @@ if executable(b:eslint_exe)
 end
 
 if executable("prettier")
-    let &l:formatprg = "prettier --stdin --stdin-filepath % --config-precedence file-override"
+    let &l:formatprg = "prettier --config-precedence file-override"
 end
 ```
 
@@ -96,14 +97,7 @@ quickfix list entries.
 As an alternative, I also have this mapping:
 
 ```
-nnoremap <buffer>
-            \<silent>
-            \<localleader>l :exe 'split
-            \<bar>terminal
-            \set ESLINT_EXEC_PATH (npm bin);
-            \"$ESLINT_EXEC_PATH"/eslint '
-            \. expand('%')<cr><c-w><c-p>
-
+nnoremap <silent> <leader>l :exe 'split<bar>terminal set ESLINT_EXEC_PATH (npm bin); "$ESLINT_EXEC_PATH"/eslint ' . expand('%')<cr><c-w><c-p>
 ```
 
 It opens a split with a `:terminal` and runs ESlint on the current file.
@@ -118,33 +112,14 @@ to adjust to different compilers and linters.
 
 Even less fancy. When I'm in a test file I can hit `<leader>t` to automatically
 run `jest` on the current file. Most of the time I'm using `jest --watch` or I
-have `entr` to watch certain files and run `stack test` whenever they
+have `entr` to watch certain files and just run `stack test` whenever they
 change.
 
 ### File Navigation
 
 I admit that the vanilla way is pretty slow but the thing is that it's totally
 fine for me. I hit `<leader>e` and I get a command prompt with `:e
-.[CURSOR]/**/*`. My cursor position is indicated by [CURSOR]. I enter the base
-folder where I want to search and then I just rely on tab completion. I am yet
-to work on repo so big that this is not instantaneous. To help Neovim skip
-directories I'm not interested in, I add patterns to `wildignore` from filetype
-specific files. For example, in my `javascript.vim` file I add
-`*/node_modules/*` to `widlignore`.
-
-### Git
-
-Here's a list of git related plugins and programs I've tried:
-
-- GitKraken
-- Sublime Merge
-- Visual Studio Code GitLens plugin
-- tig
-- Fugitive
-- GV
-- vimagit
-
-From that list, there are exactly two features I ended up using: One is `:Gedit branch-name:%` to load a version of the current file from a different branch into my buffer. The other is either Sublime Merge or the merge conflict resolution interface of Visual Studio Code. For everything else I find the command line to be faster and often even more convenient. `git diff` gives me a great overview of my changes. The best thing about it? I can slouch in my chair and scroll up and down with just two keys. `git add -p` let's me interactively stage hunks. Again, minimal input required on my side.
-
-If I ever miss `:Gedit` I can just write a mapping or a function that uses `Git show [treeish]:[filepath]` under the hood.
-
+[CURSOR]/**/*`. My cursor position is indicated by [CURSOR]. I enter the base
+folder where I want to search (easier than adding dozens of folders per
+language) and then I just rely on tab completion. I am yet to work on repo so
+big that this is not instantaneous.
