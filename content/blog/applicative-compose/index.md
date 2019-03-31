@@ -6,7 +6,7 @@ publish: true
 
 ## The Problem
 
-When I went through _Haskell From First Principle (HFFP)_ the first time, I struggled with the `Compose` applicative instance, which is part of an exercise in chapter 25. I recently revisited some chapters from the book and I finally understand how it works. In this post I'll go through some hints and visual cues that have helped me sort it all out.
+When I went through _Haskell From First Principle (HFFP)_ the first time, I struggled with the `Compose` applicative instance, which is part of an exercise in chapter 25. I recently revisited some chapters from the book and it's beginning to make a lot more sense now. In this post I'll go through some hints and visual cues that have helped me sort it all out.
 
 Here's the code that I couldn't make sense of initially:
 
