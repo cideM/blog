@@ -1,5 +1,5 @@
 ---
-title: Compose for Applicative
+title: Applicative Instance for Compose
 date: "2019-03-27"
 publish: true
 ---
@@ -7,13 +7,13 @@ publish: true
 ## The Problem
 
 ```haskell
-instance (Applicative fa, Applicative fb) => 
+instance (Applicative fa, Applicative fb) =>
   Applicative (Compose fa fb) where
-  (<*>) :: 
-       Compose fa fb (a -> b) 
-    -> Compose fa fb a 
+  (<*>) ::
+       Compose fa fb (a -> b)
+    -> Compose fa fb a
     -> Compose fa fb b
-  Compose x <*> Compose y = 
+  Compose x <*> Compose y =
     Compose ((<*>) <$> x <*> y)
 ```
 _Functor types are named fa, fb, and so on. If you see an f, it's a function, both on the type and the data level. I refer to fa and fb as functors since the applicative type class requires those things to be functors._
@@ -51,8 +51,8 @@ Let's up the ante a bit and wrap both the function and the value in another `May
 This does not work and even without understanding category theory it seems plausible that we can't just add another layer and expect the original to work. After all the types here would be, with `fa` and `fb` both `Maybe` -- and that's just not something plain `<*>` can handle.
 
 ```haskell
-   fa (fb (a -> b)) 
--> fa (fb a) 
+   fa (fb (a -> b))
+-> fa (fb a)
 -> fa (fb b)
 ```
 
@@ -68,31 +68,31 @@ We lift `<*>` over both values. I like to think of it like doing exactly the sam
 
 ## Back to the Abstract Approach
 
-How does `liftA2` help us make sense of the instance code though? 
+How does `liftA2` help us make sense of the instance code though?
 
 ```haskell
-instance (Applicative fa, Applicative fb) => 
+instance (Applicative fa, Applicative fb) =>
   Applicative (Compose fa fb) where
-  (<*>) :: 
-       Compose fa fb (a -> b) 
-    -> Compose fa fb a 
+  (<*>) ::
+       Compose fa fb (a -> b)
+    -> Compose fa fb a
     -> Compose fa fb b
-  Compose x <*> Compose y = 
+  Compose x <*> Compose y =
     Compose ((<*>) <$> x <*> y)
 ```
 
-The first part `(<*>) <$> x` written without infix notation and `fmap` instead of its symbol synonym is `fmap (<*>) x`. We map the `<*>` over the `x`. If you look at the type signature above, we just apply `<*>` to the `g (a -> b)` part. 
+The first part `(<*>) <$> x` written without infix notation and `fmap` instead of its symbol synonym is `fmap (<*>) x`. We map the `<*>` over the `x`. If you look at the type signature above, we just apply `<*>` to the `g (a -> b)` part.
 
 ```haskell
-instance (Applicative fa, Applicative fb) => 
+instance (Applicative fa, Applicative fb) =>
   Applicative (Compose fa fb) where
-    (<*>) :: 
-          Compose fa fb (a -> b) 
-                    --  ^^^^^^^^ 
+    (<*>) ::
+          Compose fa fb (a -> b)
+                    --  ^^^^^^^^
                     -- This is the first argument to <*>
-       -> Compose fa fb a 
+       -> Compose fa fb a
        -> Compose fa fb b
-    Compose x <*> Compose y = 
+    Compose x <*> Compose y =
         -- fa' :: fa (fb a -> fb b)
         --            ^^^^ The 2nd argument to <*>
         let fa' = fmap (<*>) x
@@ -102,13 +102,13 @@ instance (Applicative fa, Applicative fb) =>
 The `<*>` only needs its 2nd argument now, which is a functor with a value inside it. And we have something like that **inside** our `y` (`y` is `fa fb b` and therefore the missing argument to `<*>` is the `fb b` part inside the `fa`). How can we apply a function inside a functor to a value inside a functor? `<*>`! And that's how we arrive at the 2nd part.
 
 ```haskell
-instance (Applicative fa, Applicative fb) => 
+instance (Applicative fa, Applicative fb) =>
   Applicative (Compose fa fb) where
-    (<*>) :: 
-          Compose fa fb (a -> b) 
-       -> Compose fa fb a 
+    (<*>) ::
+          Compose fa fb (a -> b)
+       -> Compose fa fb a
        -> Compose fa fb b
-    Compose x <*> Compose y = 
+    Compose x <*> Compose y =
         let fa' = fmap (<*>) x
         in fa' <*> y
 ```
