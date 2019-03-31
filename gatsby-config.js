@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: `fbrs`,
     author: `Florian Beeres`,
-    description: `Mostly Javascript, Haskell and Rust`,
+    description: `Javascript, Haskell and Rust`,
     siteUrl: `https://fbrs.io`,
     social: {
       twitter: `ayanamivey`,
@@ -83,9 +83,9 @@ module.exports = {
         short_name: `fbrs`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#663399`,
+        theme_color: `#e53985`,
         display: `minimal-ui`,
-        icon: `content/assets/gatsby-icon.png`,
+        icon: `src/assets/favicon-32x32.png`,
       },
     },
     `gatsby-plugin-offline`,
