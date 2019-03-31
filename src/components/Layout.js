@@ -1,13 +1,21 @@
 import React from 'react'
 import Link from './Link'
 import Anchor from './Anchor.js'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components'
 import Bio from './Bio.js'
 import { rhythm, scale } from '../utils/typography'
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    color: ${props => props.theme.colors.text.normal};
+    background: ${props => props.theme.colors.background};
+  }
+`
 
 const theme = {
   colors: {
     brand: '#e53985',
+    background: '#ffffff',
     text: {
       dimmed: '#888888',
     },
@@ -70,10 +78,12 @@ class Layout extends React.Component {
             padding: ${rhythm(1.5)} ${rhythm(3 / 4)};
           `}
         >
+          <GlobalStyle />
           <Header isRootPath={location.pathname === rootPath}>{title}</Header>
           {children}
           <footer>
-            © 2018, Built with <Anchor href="https://www.gatsbyjs.org">Gatsby</Anchor>
+            © 2018, Built with{' '}
+            <Anchor href="https://www.gatsbyjs.org">Gatsby</Anchor>
           </footer>
         </div>
       </ThemeProvider>
