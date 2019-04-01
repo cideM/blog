@@ -1,5 +1,5 @@
 ---
-title: How not to Write Crap Code
+title: Some Rules for Being More Effective at Work
 date: "2019-01-08"
 publish: true
 ---

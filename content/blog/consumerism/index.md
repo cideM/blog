@@ -1,5 +1,5 @@
 ---
-title: Don't Buy Useless Crap
+title: Think Before You Buy Things
 date: "2018-08-15"
 publish: true
 ---
