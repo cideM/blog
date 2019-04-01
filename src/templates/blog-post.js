@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 import Link from '../components/Link'
+import Anchor from '../components/Anchor'
 import Bio from '../components/Bio'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
@@ -59,6 +60,15 @@ class BlogPostTemplate extends React.Component {
             marginBottom: rhythm(1),
           }}
         />
+        <p
+          css={`
+            font-style: italic;
+            text-align: center;
+          `}
+        >
+          Found a mistake? Got feedback? Please raise an issue on{' '}
+          <Anchor href="https://github.com/cideM/blog/issues">GitHub</Anchor>!
+        </p>
         <div
           css={`
             display: flex;
