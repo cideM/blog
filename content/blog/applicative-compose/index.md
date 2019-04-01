@@ -88,20 +88,20 @@ Let's up the ante a bit and wrap both the function and the value in another `May
 
 This does not work since we can't just add another layer and expect the original `<*>` to work. After all, its type signature expects function and value to be inside a single functor, not nested in another.
 
-So what's the #1 solution for manipulating nested stuff in Haskell? Lift all the things!
+So what's the #1 solution for manipulating nested stuff in Haskell? `fmap` all the things!
 
 ```haskell
 > :m Control.Applicative
 > let a = Just (Just ((+) 2))
 > let b = Just (Just 5)
-> (liftA (<*>) a) <*> b
+> fmap (<*>) a <*> b
 ```
 
-We lift `<*>` over `a`, meaning we partially apply `<*>` to the `Just ((+) 2)` inside `a`. We then take that partially applied function (which is still inside the functor `a`) and apply it to the `Just 5` in `b`. Please go ahead and open a repl now and play around with that code, it can do wonders for understanding stuff like that.
+We map `<*>` over `a`, meaning we partially apply `<*>` to the `Just ((+) 2)` inside `a`. We then take that partially applied function (which is still inside the functor `a`) and apply it to the `Just 5` in `b`. Please go ahead and open a repl now and play around with that code, it can do wonders for understanding stuff like that.
 
 ## Something Abstract
 
-But how does `liftA` help us make sense of the instance code?
+But how does the `fmap` knowledge from the last paragraph help us make sense of the instance code?
 
 ```haskell
 instance (Applicative fa, Applicative fb) =>
@@ -160,19 +160,25 @@ Quick recap:
 - `fmap (<*>) x`: Partially apply `<*>` the contents of `x`, which gives us a functor holding a partially applied function.
 - `fa' <*> y`: Fully apply the `<*>` inside `fa'` (!) to the contents of `y` through another use of `<*>`.
 
-## Back to `liftA`
+## The hackage implementation
 
 The implementation of the applicative instance using `<*>` and a mix of infix operators requires some mental gymnastics. On [hackage](http://hackage.haskell.org/package/base-4.12.0.0/docs/src/Data.Functor.Compose.html#line-112) however the instance uses `liftA2`, which does a much better job of communicating the essence of what's going on. Here's an example of how `liftA2` works, and where it's compared to our use of `liftA` from above.
 
 ```haskell
 > let a = Just (Just ((+) 2))
 > let b = Just (Just 5)
-> (liftA (<*>) a) <*> b
+> fmap (<*>) a <*> b
+Just (Just 7)
+> liftA (<*>) a <*> b
 Just (Just 7)
 > liftA2 (<*>) a b
 Just (Just 7)
 ```
 
 As you can see, `liftA2` leads to the same result but is a bit more concise and expressive in this case. We can use `liftA2` to conveniently apply `<*>` to the contents of the two functors in the two `Compose` types.
+
+## Edit
+
+Thanks to `u/Syrak` from reddit for reminding me that `liftA` and `fmap` are pretty much the same. I edited the post so that `liftA` is only used at the very end. See also [his comment](https://www.reddit.com/r/haskell/comments/b8067x/blog_post_the_compose_newtype_and_its_applicative/ejvt62y?utm_source=share&utm_medium=web2x) for more insights!
 
 [^1]: Technically the minimal definition of applicative requires `pure` and either `<*>` or `liftA2`
