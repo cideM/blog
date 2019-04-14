@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
 const theme = {
   colors: {
-    brand: '#e53985',
+    brand: '#7da3be',
     background: '#ffffff',
     text: {
       dimmed: '#888888',

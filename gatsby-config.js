@@ -83,7 +83,7 @@ module.exports = {
         short_name: `fbrs`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#e53985`,
+        theme_color: `#7da3be`,
         display: `minimal-ui`,
         icon: `src/assets/favicon-32x32.png`,
       },
