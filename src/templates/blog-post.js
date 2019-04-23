@@ -53,14 +53,18 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={this.props.location} title={siteTitle}>
         <SEO title={post.frontmatter.title} description={post.excerpt} />
-        <h1 css={`margin-bottom: 0`}>{post.frontmatter.title}</h1>
+        <h1
+          css={`
+            margin-bottom: 0;
+          `}
+        >
+          {post.frontmatter.title}
+        </h1>
         <p
-          css={
-            `
-            margin-top: ${rhythm(1/2)};
-            margin-bottom: ${rhythm(1/2)};
-            `
-          }
+          css={`
+            margin-top: ${rhythm(1 / 2)};
+            margin-bottom: ${rhythm(1 / 2)};
+          `}
         >
           {post.frontmatter.date}
         </p>

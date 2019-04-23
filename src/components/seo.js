@@ -20,8 +20,12 @@ function SEO({ description, lang, meta, keywords, title }) {
             title={title}
             titleTemplate={`%s | ${data.site.siteMetadata.title}`}
             link={[
-                { rel: 'icon', type: 'image/png', href: `${favicon}` },
-                { rel: 'apple-touch-icon', type: 'image/png', href: `${appleTouchIcon}` }
+              { rel: 'icon', type: 'image/png', href: `${favicon}` },
+              {
+                rel: 'apple-touch-icon',
+                type: 'image/png',
+                href: `${appleTouchIcon}`,
+              },
             ]}
             meta={[
               {
