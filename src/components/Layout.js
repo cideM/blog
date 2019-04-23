@@ -22,12 +22,13 @@ const theme = {
   },
 }
 
-const RootHeader = styled.h1`
-  margin-top: 0;
+const RootHeader = styled.h2`
+  margin: 0;
 `
 
 const PostHeader = styled.h3`
   margin-top: 0;
+  margin-bottom: ${rhythm(1 / 2)};
 `
 
 const RootLink = ({ children }) => (
@@ -50,6 +51,7 @@ const Header = ({ isRootPath, children }) =>
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: ${rhythm(1)};
       `}
     >
       <RootHeader>
@@ -75,7 +77,7 @@ class Layout extends React.Component {
             margin-left: auto;
             margin-right: auto;
             max-width: ${rhythm(28)};
-            padding: ${rhythm(1)} ${rhythm(1/2)};
+            padding: ${rhythm(1)} ${rhythm(1 / 2)};
           `}
         >
           <GlobalStyle />

@@ -2,7 +2,6 @@ import React from 'react'
 import { StaticQuery, graphql } from 'gatsby'
 import Anchor from './Anchor'
 import styled, { css } from 'styled-components'
-import Image from 'gatsby-image'
 
 import { rhythm } from '../utils/typography'
 
@@ -17,7 +16,6 @@ function Bio() {
             css={`
               display: flex;
               align-items: center;
-              margin-bottom: ${rhythm(1)};
             `}
           >
             <div
@@ -29,17 +27,6 @@ function Bio() {
             >
               <Anchor href={`https://github.com/cideM`}>GitHub</Anchor>
             </div>
-            <Image
-              fixed={data.avatar.childImageSharp.fixed}
-              alt={author}
-              css={`
-                margin-left: ${rhythm(0.5)};
-                width: 50px;
-                height: 50px;
-                margin-bottom: 0;
-                border-radius: 10000px;
-              `}
-            />
           </div>
         )
       }}

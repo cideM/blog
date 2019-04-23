@@ -1,20 +1,24 @@
 import Typography from 'typography'
 
 const typography = new Typography({
-  baseFontSize: '16px',
+  baseFontSize: '18px',
   baseLineHeight: 1.4,
   googleFonts: [
     {
-      name: 'Roboto',
+      name: 'Roboto Mono',
+      styles: ['400'],
+    },
+    {
+      name: 'Lora',
       styles: ['400', '400i', '700'],
     },
     {
-      name: 'Roboto Mono',
-      styles: ['400', '400i', '700'],
+      name: 'Quicksand',
+      styles: ['400'],
     },
   ],
-  bodyFontFamily: ['Roboto'],
-  headerFontFamily: ['Roboto'],
+  bodyFontFamily: ['Lora'],
+  headerFontFamily: ['Quicksand'],
 })
 
 export default typography

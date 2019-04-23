@@ -13,16 +13,26 @@ const Post = styled.div`
     font-family: Roboto Mono, monospace;
   }
 
+  & h2 {
+    margin-bottom: ${rhythm(0.5)};
+    margin-top: 0;
+  }
+
   & pre {
     min-width: 100%;
+    margin: 0;
     float: left;
-    margin-bottom: ${rhythm(1)};
     padding-top: ${rhythm(0.5)};
     padding-bottom: ${rhythm(0.5)};
   }
 
+  & p {
+    margin-bottom: ${rhythm(1)};
+  }
+
   & .gatsby-highlight {
     overflow: auto;
+    margin-bottom: ${rhythm(1)};
   }
 
   a {
@@ -43,14 +53,14 @@ class BlogPostTemplate extends React.Component {
     return (
       <Layout location={this.props.location} title={siteTitle}>
         <SEO title={post.frontmatter.title} description={post.excerpt} />
-        <h1>{post.frontmatter.title}</h1>
+        <h1 css={`margin-bottom: 0`}>{post.frontmatter.title}</h1>
         <p
-          style={{
-            ...scale(-1 / 5),
-            display: `block`,
-            marginBottom: rhythm(1),
-            marginTop: rhythm(-1),
-          }}
+          css={
+            `
+            margin-top: ${rhythm(1/2)};
+            margin-bottom: ${rhythm(1/2)};
+            `
+          }
         >
           {post.frontmatter.date}
         </p>
@@ -69,40 +79,6 @@ class BlogPostTemplate extends React.Component {
           Found a mistake? Got feedback? Please raise an issue on{' '}
           <Anchor href="https://github.com/cideM/blog/issues">GitHub</Anchor>!
         </p>
-        <div
-          css={`
-            display: flex;
-            justify-content: flex-end;
-          `}
-        >
-          <Bio />
-        </div>
-
-        <ul
-          css={`
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 0;
-            list-style: none;
-          `}
-        >
-          <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
-              </Link>
-            )}
-          </li>
-          <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
-              </Link>
-            )}
-          </li>
-        </ul>
       </Layout>
     )
   }
