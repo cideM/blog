@@ -1,5 +1,5 @@
 import React from 'react'
-import {  graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import Link from '../components/Link.js'
 
 import Layout from '../components/Layout'
@@ -16,7 +16,16 @@ class BlogIndex extends React.Component {
       <Layout location={this.props.location} title={siteTitle}>
         <SEO
           title="All posts"
-          keywords={[`blog`, `gatsby`, `javascript`, `react`]}
+          keywords={[
+            `blog`,
+            `gatsby`,
+            `javascript`,
+            `react`,
+            `haskell`,
+            `rust`,
+            `vimscript`,
+            `neovim`,
+          ]}
         />
         {posts.map(({ node }) => {
           const title = node.frontmatter.title || node.fields.slug
@@ -27,11 +36,20 @@ class BlogIndex extends React.Component {
                   marginBottom: rhythm(1 / 4),
                 }}
               >
-                <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
+                <Link
+                  style={{ boxShadow: `none`, textDecoration: `none` }}
+                  to={node.fields.slug}
+                >
                   {title}
                 </Link>
               </h3>
-              <small>{node.frontmatter.date}</small>
+              <div
+                css={`
+                  margin-bottom: ${rhythm(1 / 4)};
+                `}
+              >
+                <small>{node.frontmatter.date}</small>
+              </div>
               <p dangerouslySetInnerHTML={{ __html: node.excerpt }} />
             </div>
           )
@@ -56,7 +74,7 @@ export const pageQuery = graphql`
     ) {
       edges {
         node {
-          excerpt
+          excerpt(pruneLength: 200)
           fields {
             slug
           }

@@ -27,7 +27,6 @@ function Bio() {
                 flex-direction: column;
               `}
             >
-              haskell rust javascript
               <Anchor href={`https://github.com/cideM`}>GitHub</Anchor>
             </div>
             <Image

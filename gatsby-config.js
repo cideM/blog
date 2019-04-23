@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: `fbrs`,
     author: `Florian Beeres`,
-    description: `Javascript, Haskell and Rust`,
+    description: `Javascript, Haskell, Vimscript and Rust`,
     siteUrl: `https://fbrs.io`,
     social: {
       twitter: `ayanamivey`,

@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Anchor = styled.a`
-  color: ${props => props.theme.colors.brand};
-  text-decoration: none;
+  color: inherit;
+  text-decoration: underline;
   &:hover {
     text-decoration: underline;
   }

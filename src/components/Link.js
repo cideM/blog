@@ -5,8 +5,8 @@ import { Link } from 'gatsby'
 const LinkInternal = props => (
   <Link
     css={`
-      color: ${props => props.theme.colors.brand};
-      text-decoration: none;
+      color: inherit;
+      text-decoration: underline;
       &:hover {
         text-decoration: underline;
       }
