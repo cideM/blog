@@ -55,6 +55,7 @@ class BlogPostTemplate extends React.Component {
         <SEO title={post.frontmatter.title} description={post.excerpt} />
         <h1
           css={`
+            margin-top: ${rhythm(1.5)};
             margin-bottom: 0;
           `}
         >
@@ -63,7 +64,7 @@ class BlogPostTemplate extends React.Component {
         <p
           css={`
             margin-top: ${rhythm(1 / 2)};
-            margin-bottom: ${rhythm(1 / 2)};
+            margin-bottom: ${rhythm(1)};
           `}
         >
           {post.frontmatter.date}
