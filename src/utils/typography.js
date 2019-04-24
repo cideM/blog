@@ -5,20 +5,16 @@ const typography = new Typography({
   baseLineHeight: 1.4,
   googleFonts: [
     {
-      name: 'Roboto Mono',
-      styles: ['400'],
+      name: 'Oswald',
+      styles: ['400', '500'],
     },
     {
-      name: 'Lora',
+      name: 'Vollkorn',
       styles: ['400', '400i', '700'],
     },
-    {
-      name: 'Quicksand',
-      styles: ['400'],
-    },
   ],
-  bodyFontFamily: ['Lora'],
-  headerFontFamily: ['Quicksand'],
+  bodyFontFamily: ['Vollkorn'],
+  headerFontFamily: ['Oswald'],
 })
 
 export default typography
