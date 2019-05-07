@@ -1,7 +1,7 @@
 ---
 title: Some Rules for Being More Effective at Work
 date: "2019-01-08"
-publish: true
+publish: false
 ---
 
 Yesterday I submitted what was probably my worst code over the past 12 months. Not because I used the wrong data structure or called something on `undefined`, but simply because I was the worst possible version of myself. That must not happen again. I'm human, I can learn from my mistakes... right?
