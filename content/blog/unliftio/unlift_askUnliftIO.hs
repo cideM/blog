@@ -54,7 +54,7 @@ instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
     ReaderT $ \env ->
       askUnliftIO >>= \unliftedIO
    -- ^^^^^^ This is the askUnliftIO from the IO instance
-       -> liftIO $ return (UnliftIO (unliftIO unliftedIO . flip runReaderT env))
+       -> liftIO $ (UnliftIO (unliftIO unliftedIO . flip runReaderT env))
 
 -- What's the type signature of        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- Think I got it actually ... runReaderT here gives me the m, which should be IO and the `unliftIO unliftedIO` is just identiy so the whole thing is the m a -> IO a
