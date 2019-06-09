@@ -37,7 +37,8 @@ foo func = func "test"
 Again, you would like to use a function with `ReaderT env IO ()`, instead of plain `IO ()`. Unfortunately, `liftIO` won't help us here, due to the negative position of the first `IO`. This is where `unliftIO` shines!
 
 ```haskell
-foo2 :: (String -> ReaderT String IO ()) -> ReaderT String IO ()
+foo2 :: (String -> ReaderT String IO ())
+     -> ReaderT String IO ()
 foo2 func =
   askUnliftIO >>=
     \u -> liftIO $ foo (unliftIO u . func)
@@ -46,7 +47,8 @@ foo2 func =
                 -- reimplement anything
 
 -- Or alternatively and more concisely
-foo2' func = withRunInIO $ \runInIO -> foo (runInIO . func)
+foo2' func =
+  withRunInIO $ \runInIO -> foo (runInIO . func)
 ```
 
 Both versions of `foo2` work. `unliftIO` temporarily translates back from `m a` to `IO a` so that we can utilize our `ReaderT` but inside a function expecting plain `IO ()`. In that sense the name "unlift" is quite fitting since it's the opposite of lifting.
@@ -78,12 +80,14 @@ We have two instances for `MonadUnliftIO` in this file, one for `ReaderT` and on
 Then there's the `ReaderT` instance, which is a bit more involved.
 
 ```haskell
-instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
+instance MonadUnliftIO m =>
+  MonadUnliftIO (ReaderT r m) where
   askUnliftIO =
     ReaderT $ \env ->
       askUnliftIO >>= \newtypeU ->
         let unlift = unliftIO newtypeU
-         in liftIO $ return (UnliftIO (unlift . flip runReaderT env))
+         in liftIO $ return
+           (UnliftIO (unlift . flip runReaderT env))
 ```
 
 The function signature of `askUnliftIO` is `m (UnliftIO m)`. Specialized to our `ReaderT` example here it's `askUnliftIO :: ReaderT r m (UnliftIO (ReaderT r m))`. Since we need to stay in the `ReaderT` monad, the function body starts by creating a new `ReaderT`. More precisely, and also how to docs formulate it, we need to preserve the monadic context, which is `ReaderT r m`.
@@ -99,17 +103,25 @@ The last line composes two functions together: run our `ReaderT` and pass the re
 One thing that helps tremendously is to just add type annotations everywhere and let GHC check if our assumptions are correct. If you're ever stuck and can't figure out the type signature of something, just replace it with a wildcard[^3] and see what GHC suggests. Here's the above code snippet but with types sprinkled all over it. Note that this snippet _requires the `{-# LANGUAGE InstanceSigs #-}` pragma_!
 
 ```haskell
-instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
+instance MonadUnliftIO m =>
+  MonadUnliftIO (ReaderT r m) where
   askUnliftIO :: ReaderT r m (UnliftIO (ReaderT r m))
   askUnliftIO =
     ReaderT $ \env ->
-      (askUnliftIO :: m (UnliftIO m)) >>= \(u :: UnliftIO m) ->
+    -- askUnliftIO :: m (UnliftIO m)
+      (askUnliftIO >>= \(u :: UnliftIO m) ->
         let unlift = (unliftIO u :: m a -> IO a)
             newUnlift =
-              (unlift . flip runReaderT env :: ReaderT r m a1 -> IO a1)
+                     -- flip runReaderT env
+                     -- :: ReaderT r m a1
+                     -- -> m a1
+              (unlift . flip runReaderT env)
+         -- returned :: IO (UnliftIO (ReaderT r m))
             returned =
-              return (UnliftIO newUnlift) :: IO (UnliftIO (ReaderT r m))
-            returnedLifted = liftIO returned :: m (UnliftIO (ReaderT r m))
+              return (UnliftIO newUnlift)
+         -- returnedLifted :: m (UnliftIO (ReaderT r m))
+              returnedLiftee =
+              liftIO returned
          in returnedLifted
 ```
 
@@ -117,7 +129,75 @@ instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
 
 ## `withRunInIO`
 
-withRunInIO :: ((forall a. m a -> IO a) -> IO b) -> m b
+The `withRunInIO` function removes a bit of the plumbing that `askUnliftIO` requires and let's you write code that is even more concise than `askUnliftIO` (as can be seen from the example at the end of the first chapter).
+
+Its function signature is `((forall a. m a -> IO a) -> IO b) -> m b`, but for simplicity's sake I won't include the `forall` part in future references to the signature. As you can see, it takes only a single argument, which is a callback.
+
+Just as with `askUnliftIO`, the `IO` instance is pretty boring, so we'll jump straight to our familiar `ReaderT`.
+
+The basic layout is quite similar as for `askUnliftIO`: We're returning a `ReaderT`, and inside the function passed to the constructor we're calling `withRunInIO`. This uses the `withRunInIO` instance from whatever monad we're using in the reader. Hence the type class constraint for the monad used in the reader. But there is one important difference: `withRunInIO` takes an argument, which is called `inner` in the code snippets.
+
+```haskell
+withRunInIO inner =
+  ReaderT $ \env ->
+    withRunInIO $ \runInIO ->
+      inner (runInIO . flip runReaderT env)
+
+foo2' func = withRunInIO $
+  \runInIO -> foo (runInIO . func)
+-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ inner
+```
+
+I copied the snippet from the first chapter, so it's easier to see how `foo2'` is passing a callback to `withRunInIO`, which is what we refer to as `inner`. That function also receives a callback (here called `runInIO`), which does exactly the same as the `unlift` function we pulled out of the `UnliftIO` newtype in the last chapter.
+
+The basic mechanism is exactly the same: peel off the monad layers, delegating to the `UnliftIO` instance of each layer, until we eventually reach `IO`. `withRunInIO` is just a bit more concise.
+
+Here's the reader instance with type annotations:
+
+```haskell
+instance MonadUnliftIO m =>
+  MonadUnliftIO (ReaderT r m) where
+  withRunInIO
+    :: ((forall a. ReaderT r m a -> IO a) -> IO b)
+    -> ReaderT r m b
+  withRunInIO inner =
+    ReaderT $ \env ->
+      -- withRunInIO
+      -- :: ((forall a. m a -> IO a) -> IO b)
+      -- -> m b
+      withRunInIO $ \runInIO ->
+          -- runInIO          |   flip runReaderT env
+          -- :: forall a. m a |   :: ReaderT r m a
+          -- -> IO a          |   -> m a
+          inner (runInIO      .   flip runReaderT env)
+```
+
+## What Now?
+
+The goal of this post was to understand how `unliftio-core` works on a basic level. Consider it an intellectual exercise for non-experts (like me) to understand how other people write their Haskell libraries. For information on how this library treats async exceptions or handling the state monad in relation to cleanup handlers, please see the official documentation.
+
+The `unliftio` library re-exports a lot of modules, none of which I looked at in this post. That's because once you understand the concept, the implementation of most (all?) of these re-exported modules is fairly mechanical. See for example this random snippet from `UnliftIO.Process`
+
+```haskell
+withCreateProcess ::
+     MonadUnliftIO m
+  => CreateProcess
+  -> (Maybe Handle
+      -> Maybe Handle
+      -> Maybe Handle
+      -> ProcessHandle
+      -> m a)
+  -> m a
+withCreateProcess c action =
+  withRunInIO
+    (\u ->
+       P.withCreateProcess
+         c
+         (\stdin_h stdout_h stderr_h proc_h ->
+            u (action stdin_h stdout_h stderr_h proc_h)))
+```
+
+Hopefully it's easy to see the familiar pattern of passing a callback to `withRunInIO`, where you then have access to an unlift function, thanks to the type class constraint.
 
 [^1] `IO` also occurs in positive position.
 

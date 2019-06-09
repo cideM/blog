@@ -57,7 +57,7 @@ instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
       (askUnliftIO :: m (UnliftIO m)) >>= \(unliftedIO :: UnliftIO m) ->
         let unlift = (unliftIO unliftedIO :: m a -> IO a)
             newUnlift =
-              (unlift . flip runReaderT env :: ReaderT r m a1 -> IO a1)
+              (unlift . (flip runReaderT env :: ReaderT r m a1 -> m a1))
             returned =
               return (UnliftIO newUnlift) :: IO (UnliftIO (ReaderT r m))
             returnedLifted = liftIO returned :: m (UnliftIO (ReaderT r m))
