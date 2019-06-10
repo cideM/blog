@@ -57,9 +57,9 @@ What made me scratch my head a little was where `runInIO` and `u` came from, and
 
 The `MonadUnliftIO` typeclass has two methods: `askUnliftIO` and `withRunInIO`, either of which suffices for a minimal implementation. We'll go over both, so let's start with `askUnliftIO`.
 
-## `askUnliftIO`
+## `askUnliftIO :: m (UnliftIO m)`
 
-`askUnliftIO` is the first typeclass method we'll look at. It has the type signature `m (UnliftIO m)`. The `UnliftIO` newtype, which is shown below, exists because (quoting the docs)
+This is the first of the two typeclass methods we'll look at. It returns a newtype wrapper (shown below), which, according to the documentation, exists because
 
 > We need to new datatype (instead of simply using a forall) due to lack of support in GHC for impredicative types.
 
@@ -69,15 +69,11 @@ newtype UnliftIO m = UnliftIO
   }
 ```
 
-You can pretty much ignore the `UnliftIO` newtype for the purposes of understanding how the library works.
+You can pretty much ignore the newtype for the purposes of understanding how the library works, since it's purely an implementation detail.
 
 To make it easier to follow along, I created [a gist](https://gist.github.com/cideM/aa69df23cf8cb50295ed629f2432d6a6) with a Haskell script that you can simply save somewhere and then load into `ghci`. Note that I'm not importing `unliftio`, instead I simply copy & pasted the minimal, relevant bits from the source code.
 
-_Once post is done, annotate the source code so it's a stand alone tutorial_
-
-We have two instances for `MonadUnliftIO` in this file, one for `ReaderT` and one for `IO`. The `IO` instance isn't very interesting, since it's more or less just the identity function.
-
-Then there's the `ReaderT` instance, which is a bit more involved.
+We have two instances for `MonadUnliftIO` in this file, one for `ReaderT` and one for `IO`. The latter isn't very interesting, since it's more or less just the identity function. We'll therefore focus on the former:
 
 ```haskell
 instance MonadUnliftIO m =>
@@ -90,9 +86,9 @@ instance MonadUnliftIO m =>
            (UnliftIO (unlift . flip runReaderT env))
 ```
 
-The function signature of `askUnliftIO` is `m (UnliftIO m)`. Specialized to our `ReaderT` example here it's `askUnliftIO :: ReaderT r m (UnliftIO (ReaderT r m))`. Since we need to stay in the `ReaderT` monad, the function body starts by creating a new `ReaderT`. More precisely, and also how to docs formulate it, we need to preserve the monadic context, which is `ReaderT r m`.
+The function signature of `askUnliftIO` specialized to `ReaderT` is `ReaderT r m (UnliftIO (ReaderT r m))`. Since we need to stay in the `ReaderT` monad, the function body starts by creating a new `ReaderT`. More precisely, and also how to docs formulate it, we're preserving the monadic context.
 
-In the function passed to the `ReaderT` constructor, we use `askUnliftIO` yet again, but this time it's the `askUnliftIO` of the monad inside `ReaderT` (the `m` in `ReaderT r m`). That's why there is a type class constraint for that `m`, mandating that `m` also implements `MonadUnliftIO`. This kind of unwrapping our monad layers by invoking the instance for the next layer is a pretty important concept which can be seen in many libraries.
+In the function passed to the `ReaderT` constructor, we use `askUnliftIO` yet again, but this time it's the instance of the monad inside our reader (the `m` in `ReaderT r m`). That's why there is a type class constraint, mandating that `m` also implements `MonadUnliftIO`. This kind of unwrapping our monad layers by invoking the instance for the next layer is a pretty important concept which can be seen in many libraries.
 
 Since we're using monadic bind `>>=`, the inner most function will get the `UnliftIO m` part from `m (UnliftIO m)`.
 
@@ -120,7 +116,7 @@ instance MonadUnliftIO m =>
             returned =
               return (UnliftIO newUnlift)
          -- returnedLifted :: m (UnliftIO (ReaderT r m))
-              returnedLiftee =
+            returnedLifted =
               liftIO returned
          in returnedLifted
 ```
