@@ -52,16 +52,16 @@ instance MonadUnliftIO IO where
 
 instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
   askUnliftIO :: ReaderT r m (UnliftIO (ReaderT r m))
-  askUnliftIO =
-    ReaderT $ \env ->
-      (askUnliftIO :: m (UnliftIO m)) >>= \(unliftedIO :: UnliftIO m) ->
-        let unlift = (unliftIO unliftedIO :: m a -> IO a)
-            newUnlift =
-              (unlift . (flip runReaderT env :: ReaderT r m a1 -> m a1))
-            returned =
-              return (UnliftIO newUnlift) :: IO (UnliftIO (ReaderT r m))
-            returnedLifted = liftIO returned :: m (UnliftIO (ReaderT r m))
-         in returnedLifted
+  askUnliftIO = ReaderT f
+    where
+      f env =
+        (askUnliftIO :: m (UnliftIO m)) >>= \(u :: UnliftIO m) ->
+          let unlift = (unliftIO u :: m a -> IO a)
+              unlift' =
+                (unlift . (flip runReaderT env :: ReaderT r m a1 -> m a1))
+              returned =
+                return (UnliftIO unlift') :: IO (UnliftIO (ReaderT r m))
+           in liftIO returned :: m (UnliftIO (ReaderT r m))
 
 -- What's the type signature of        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- Think I got it actually ... runReaderT here gives me the m, which should be IO and the `unliftIO unliftedIO` is just identiy so the whole thing is the m a -> IO a
