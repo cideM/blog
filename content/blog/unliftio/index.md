@@ -197,8 +197,6 @@ withCreateProcess c action =
 
 Hopefully it's easy to see the familiar pattern of passing a callback to `withRunInIO`, where you then have access to an unlift function, thanks to the type class constraint.
 
-[^1] `IO` also occurs in positive position.
-
-[^2] Technically the `liftIO` isn't necessary for this specific use case. Since we're in the `IO` monad anyway, `liftIO` is superfluous here.
-
-[^3] `foo :: _; foo s = s ++ s` gives `Found type wildcard ‘_’ standing for ‘[a] -> [a]’` which we can then use in the signature.
+[^1]: `IO` also occurs in positive position.
+[^2]: Technically the `liftIO` isn't necessary for this specific use case. Since we're in the `IO` monad anyway, `liftIO` is superfluous here.
+[^3]: `foo :: _; foo s = s ++ s` gives `Found type wildcard ‘_’ standing for ‘[a] -> [a]’` which we can then use in the signature.
