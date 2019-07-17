@@ -118,18 +118,120 @@ Meaning you can do this:
 ```js
 const ref = useState({ current: 0 })[0]
 ref.current = 2
-console.log(ref) // 2
+console.log(ref.current) // 2
 ```
 
 It's just JS after all. Nothing prevents you from mutating stuff willy nilly.
 
 ### Pit of Success
 
-Write the same thing with classes.
+What would the timer example look like with class based components?
+
+```js
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      input: `1`,
+      count: 0,
+    }
+
+    this.intervalId = null
+  }
+
+  increment = () => {
+    this.setState({
+      count: this.state.count + Number(this.state.input),
+    })
+  }
+
+  componentDidMount() {
+    this.intervalId = setInterval(this.increment, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId)
+  }
+
+  setInput = value => {
+    this.setState({
+      input: value,
+    })
+  }
+
+  render() {
+    return (
+      <main className="App">
+        <Input
+          id="timer-input"
+          type="text"
+          text={this.state.input}
+          onChange={this.setInput}
+        />
+        <label htmlFor="timer-input">Enter a number:</label>
+        <SomeChild value={this.state.count} />
+      </main>
+    )
+  }
+}
+```
+
+Writing this didn't require much thought. The key advantage of class based components is that methods are stable across renders and can set or refer to the most recent state without any additional work.
 
 ## Same Function, Different State
 
-Use example from coding challenge to illustrate problem.
+The next problem I ran into is related to the first example, although in a slightly different way. I created another [repl.it](https://repl.it/@cideM/hooks) to demonstrate the problem (it's a bit contrived, sorry). Imagine you have a parent that changes frequently. That parent passes a function down to one or more children. These children should _not re-render_ as frequently as the parent. But the function passed to them needs to update the parent state based on the most recent parent state.
+
+To demonstrate the problem I created a component that displays the current time. Note that I'm using `React.memo`, which makes sure that the component only re-renders if its props have changed. Equality is checked with standard, shallow equality.
+
+```js
+const ClickChild = React.memo(({ onClick }) => {
+  return <div onClick={onClick}>click me. date: {Date.now()}</div>
+})
+```
+
+The parent holds a counter, but it doesn't pass the current count down to the child.
+
+```js
+const [state, setState] = useState(0)
+const increment = useCallback(
+  () => {
+    setState(state + 1)
+  },
+  [state]
+)
+
+return (
+  <div>
+    <ClickChild onClick={increment} />
+    state: {state}
+  </div>
+)
+```
+
+The repl includes both a hooks and a class based version of this component. Click both versions and see that the class based on doesn't update the timestamp, meaning that the child doesn't re-render. In the hooks based version that is unfortunately the case.
+
+Here's the problem: I already wrapped the `increment` function in `useCallback`. But I need to make that `useCallback` function depend on the current state. Meaning everytime you click the child, the state is updated and `useCallback` reruns. But that's precisely not what we want! Now a new function is passed to `ClickChild` and it re-renders, even though it's not _using the count at all_.
+
+There are two ways you can address this problem:
+
+- Use the alternative function signature for the state updater function from `useState`: `setState(state => state + 1)`. Now we can pass an empty array to `useCallback`. The major limitation here is that you can only use the state from a single `useState` call here. If your function needs to use values from for example 5 different `useState` calls, this simply won't work. There's no `setState(state1, state2, state3 => ...)`.
+- Use `useReducer` which is currently recommended for more complex cases [^3]
+
+I personally find it a tiny bit ironic that some people are talking about removing `redux` in favor of hooks only to then be somewhat forced to use the reducer patter due to certain limitations with hooks.[^4]
+
+## Conclusion
+
+I don't dislike hooks. I'm also not as hyper-enthusiastic about them as I once was. None of what I said here should be seen as an inherent criticism of hooks, rather it's a reminder that hooks require you to think differently about how you solve problems. Switching from classes to hooks reminds me of switching from an imperative language to a pure functional one.
+
+I am absolutely certain that people will come up with good solutions for the above cases. I also need to remind myself (and others) that
+
+> Disclaimer: this post focuses on a pathological case. Even if an API simplifies a hundred use cases, the discussion will always focus on the one that got harder.[^5]
+
+Hooks are great for sharing functionality since, at least in my opinion, they compose a lot nicer than higher order components, function-as-a-child, or just plain old wrapper components.
 
 [^1] Unlike the lifecycle methods, the function passed to `useEffect` runs _after_ layout and paint.
 [^2] Alternatively you could also store input and value in references, but that would make things pretty unergonomical and would force all users of those values to reach them through `.current`.
+[^3] https://reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
+[^4] I understand that people often dislike other parts about `redux` and are actually quite fond of the reducer pattern
+[^5] Dan Abramov, https://overreacted.io/making-setinterval-declarative-with-react-hooks/
