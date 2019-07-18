@@ -8,13 +8,13 @@ publish: true
 
 When hooks were first introduced, many people found them to look fairly magical. Especially the constraint that the order of hooks must not change across renders seemed pretty wild. On the other hand, getting rid of the divide between class based and functional components, and making sharing of functionality between components easier, seemed really appealing. That was especially true for me, since I saw them as an opportunity to stop using `recompose` for absolutely everything in our codebase at work.
 
-So I took one of our features and rewrote it using hooks. The goal was to see what using hooks feels like, what issues arise and how solutions are available, so that we're well prepared when we start using hooks throughout the entire codebase.
+So I took one of our features and rewrote it using hooks. The goal was to see what using hooks feels like, what issues arise and what solutions are available, so that we're well prepared when we start using hooks throughout the entire codebase.
 
 This post is an experience report, not a review.
 
 ## Creating a Timer
 
-To me the trickiest part of hooks is the balancing act of making sure your callbacks don't reference stale data while at the same time minimizing rerenders. One example that highlights this issue is creating a timer that runs every second and increases a value. The twist is that the user can adjust the amount by which the value is increaased, without this affecting the timer in any way. No slowdowns, no speedups. The code for this example can be found in [this repl.it](https://repl.it/@cideM/timer).
+To me the trickiest part of hooks is the balancing act of making sure your callbacks don't reference stale data while at the same time minimizing rerenders. One example that highlights this issue is creating a timer that runs every second and increases a value. The twist is that the user can adjust the amount by which the value is increased, without this affecting the timer in any way. No slowdowns, no speedups. The code for this example can be found in [this repl.it](https://repl.it/@cideM/timer).
 
 ### Basic Building Blocks
 
@@ -22,7 +22,7 @@ The components are all very simple. There's a component displaying the current v
 
 ```js
 function SomeChild({ x }) {
-  return <p>Time: {x}</p>
+  return <p>Value: {x}</p>
 }
 
 function Input({ onChange, id, type, text }) {
@@ -67,7 +67,7 @@ To understand this quirky behavior you need to understand how `useEffect` works.
 2. User types into input field and state updates, triggering a render of `<App />`
 3. `useEffect` runs. It first cleans up the previous interval, then starts a new interval.
 
-If the preceding interval is cleaned up just as it's about to tick, and a new interval is then started, the pausethat the user sees is `duration of the old interval until cleanup + duration of the new interval`.
+If the preceding interval is cleaned up just as it's about to tick, and a new interval is then started, the pause that the user sees is `duration old interval + duration of the new interval`.
 
 So what's the solution to this problem? Pass an array of values, that the effect depends on, as a second argument to `useEffect`. We want our interval to remain active for the entire lifetime of the component, therefore we pass an empty array to `useEffect`. Now it only runs on mount and unmount. Wohoo!
 
@@ -79,9 +79,9 @@ So what's the solution to this problem? Pass an array of values, that the effect
 
 Except that now everything is broken. The interval ticks along nicely, but the value stays at 1.
 
-The new issue is that the function passed to `setInterval` always refers to the initial state. So on each tick it increments 0 to 1 and that's it. You can imagine that on each render, all the state and props of a component is saved in a snapshot. On subsequent renders, rather than mutating the old snapshot, a new snapshot is created. React compares the virtual DOM that would result from old and new snapshot, and update the real DOM accordingly.
+The new issue is that the function passed to `setInterval` always refers to the initial state. So on each tick it increments 0 to 1 and that's it. You can imagine that on each render the state and props of a component are saved in a snapshot. On subsequent renders, rather than mutating the old snapshot, a new snapshot is created. React compares the virtual DOM that would result from old and new snapshot, and updates the real DOM accordingly.
 
-But that also means that `x` and `input` in the function passed to `setInterval` will always refer to the values from the very initial snapshot, since `useEffect` is **only run once, after the component rendered the first time**.
+But that also means that `x` and `input` in the function passed to `setInterval` will always refer to the values from the very initial snapshot, since `useEffect` is **only run once, after the component rendered the first time** (because of the empty array I added as a second argument).
 
 How can we solve this issue for good? Our requirements are:
 
@@ -107,7 +107,7 @@ React.useEffect(() => {
 }, [])
 ```
 
-The solution here is to store the function called in `setInterval` in a reference, with `useRef`[^2]. The interval is only created once, as can be seen from the empty dependency array. But instead of refering to a function from the first render of `<App />`, we access (and call), the most recent version of that function through the reference. On each render, we simply update that stored function, by reassigning `savedCallback.current` to a new function using the most recent state. We're mutating the reference in place! Even though `useEffect` only runs once, it will can access the (mutated) updated function through the reference.
+The solution here is to store the function called in `setInterval` in a reference, with `useRef`[^2]. The interval is only created once, as can be seen from the empty dependency array. But instead of refering to a function from the first render of `<App />`, we access (and call), the most recent version of that function through the reference. On each render, we simply update that stored function, by reassigning `savedCallback.current` to a new function using the most recent state. We're mutating the reference in place! Even though `useEffect` only runs once, it can access the updated (mutated) function through the reference.
 
 Fun fact, there's a [tweet](https://twitter.com/dan_abramov/status/1099842565631819776?lang=en) by Dan Abramov where he states that:
 
@@ -209,13 +209,13 @@ return (
 )
 ```
 
-The repl includes both a hooks and a class based version of this component. Click both versions and see that the class based on doesn't update the timestamp, meaning that the child doesn't re-render. In the hooks based version that is unfortunately the case.
+The repl includes both a hooks and a class based version of this component. Click both versions and see that the class based one doesn't update the timestamp, meaning that the child doesn't re-render. In the hooks based version that is unfortunately the case.
 
 Here's the problem: I already wrapped the `increment` function in `useCallback`. But I need to make that `useCallback` function depend on the current state. Meaning everytime you click the child, the state is updated and `useCallback` reruns. But that's precisely not what we want! Now a new function is passed to `ClickChild` and it re-renders, even though it's not _using the count at all_.
 
 There are two ways you can address this problem:
 
-- Use the alternative function signature for the state updater function from `useState`: `setState(state => state + 1)`. Now we can pass an empty array to `useCallback`. The major limitation here is that you can only use the state from a single `useState` call here. If your function needs to use values from for example 5 different `useState` calls, this simply won't work. There's no `setState(state1, state2, state3 => ...)`.
+- Use the alternative function signature for the state updater function from `useState`: `setState(state => state + 1)`. Now we can pass an empty array to `useCallback`. The major limitation here is that you can only use the state from a single `useState` call. If your function needs to use values from for example 5 different `useState` calls, this simply won't work. There's no `setState(state1, state2, state3 => ...)`.
 - Use `useReducer` which is currently recommended for more complex cases [^3]
 
 I personally find it a tiny bit ironic that some people are talking about removing `redux` in favor of hooks only to then be somewhat forced to use the reducer patter due to certain limitations with hooks.[^4]
@@ -230,8 +230,8 @@ I am absolutely certain that people will come up with good solutions for the abo
 
 Hooks are great for sharing functionality since, at least in my opinion, they compose a lot nicer than higher order components, function-as-a-child, or just plain old wrapper components.
 
-[^1] Unlike the lifecycle methods, the function passed to `useEffect` runs _after_ layout and paint.
-[^2] Alternatively you could also store input and value in references, but that would make things pretty unergonomical and would force all users of those values to reach them through `.current`.
-[^3] https://reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
-[^4] I understand that people often dislike other parts about `redux` and are actually quite fond of the reducer pattern
-[^5] Dan Abramov, https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+[^1]: Unlike the lifecycle methods, the function passed to `useEffect` runs _after_ layout and paint.
+[^2]: Alternatively you could also store input and value in references, but that would make things pretty unergonomical and would force all users of those values to reach them through `.current`.
+[^3]: https://reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
+[^4]: I understand that people often dislike other parts about `redux` and are actually quite fond of the reducer pattern
+[^5]: Dan Abramov, https://overreacted.io/making-setinterval-declarative-with-react-hooks/
