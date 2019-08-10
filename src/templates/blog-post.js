@@ -42,6 +42,14 @@ const Post = styled.div`
       text-decoration: underline;
     }
   }
+
+  & blockquote {
+    font-style: italic;
+    margin: 0;
+    padding: ${rhythm(1)};
+    border-left: 10px solid ${props => props.theme.colors.brand};
+    margin-bottom: ${rhythm(1)};
+  }
 `
 
 class BlogPostTemplate extends React.Component {

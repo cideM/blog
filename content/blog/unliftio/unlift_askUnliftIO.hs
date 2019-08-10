@@ -1,4 +1,5 @@
 #!/usr/bin/env stack
+{-# LANGUAGE InstanceSigs        #-}
 {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -50,11 +51,17 @@ instance MonadUnliftIO IO where
   askUnliftIO = return (UnliftIO id)
 
 instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
-  askUnliftIO =
-    ReaderT $ \env ->
-      askUnliftIO >>= \unliftedIO
-   -- ^^^^^^ This is the askUnliftIO from the IO instance
-       -> liftIO $ (UnliftIO (unliftIO unliftedIO . flip runReaderT env))
+  askUnliftIO :: ReaderT r m (UnliftIO (ReaderT r m))
+  askUnliftIO = ReaderT f
+    where
+      f env =
+        (askUnliftIO :: m (UnliftIO m)) >>= \(u :: UnliftIO m) ->
+          let unlift = (unliftIO u :: m a -> IO a)
+              unlift' =
+                (unlift . (flip runReaderT env :: ReaderT r m a1 -> m a1))
+              returned =
+                return (UnliftIO unlift') :: IO (UnliftIO (ReaderT r m))
+           in liftIO returned :: m (UnliftIO (ReaderT r m))
 
 -- What's the type signature of        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -- Think I got it actually ... runReaderT here gives me the m, which should be IO and the `unliftIO unliftedIO` is just identiy so the whole thing is the m a -> IO a

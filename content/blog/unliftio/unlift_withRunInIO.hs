@@ -1,5 +1,7 @@
 #!/usr/bin/env stack
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE InstanceSigs        #-}
+{-# LANGUAGE RankNTypes          #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 {-
     stack
@@ -37,12 +39,9 @@ instance MonadUnliftIO IO where
   withRunInIO inner = inner id
 
 instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
+  withRunInIO :: ((forall a. ReaderT r m a -> IO a) -> IO b) -> ReaderT r m b
   withRunInIO inner =
-    ReaderT $ \env ->
-      withRunInIO $
-   -- ^^^ This is the withRunInIO from the MonadUnliftIO IO instance. Why?
-       \id' -> inner (id' . flip runReaderT env)
-     -- ^^^ This is just id
+    ReaderT $ \env -> withRunInIO $ \id' -> inner (id' . (`runReaderT` env))
 
 class MonadIO m =>
       MonadUnliftIO m
