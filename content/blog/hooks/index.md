@@ -4,8 +4,6 @@ date: '2019-07-15'
 publish: true
 ---
 
-## Introduction
-
 When hooks were first introduced, many people thought that they looked a bit magical. Especially the rule that the order of hooks must not change across renders received a lot of pushback. On the other hand, getting rid of the divide between class based and functional components, and making sharing of functionality between components easier, seemed really appealing. That was especially true for me, since I saw them as an opportunity to stop using `recompose` for absolutely everything in our codebase at work.
 
 So I took one of our features and rewrote it using hooks. The goal was to see what using hooks feels like, what issues arise and what solutions are available, so that we're well prepared when we start using hooks throughout the entire codebase.
@@ -199,12 +197,9 @@ The parent holds a counter, but it doesn't pass the current count down to the ch
 
 ```js
 const [state, setState] = useState(0)
-const increment = useCallback(
-  () => {
-    setState(state + 1)
-  },
-  [state]
-)
+const increment = useCallback(() => {
+  setState(state + 1)
+}, [state])
 
 return (
   <div>

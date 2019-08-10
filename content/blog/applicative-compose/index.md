@@ -1,10 +1,8 @@
 ---
 title: The Compose Newtype and its Applicative Instance
-date: "2019-03-27"
+date: '2019-03-27'
 publish: true
 ---
-
-## Introduction
 
 When I went through _Haskell From First Principle_ the first time, I struggled with the `Compose` applicative instance, which is part of an exercise in chapter 25. This post will give you a quick overview of the `Compose` data type and then explain how the applicative instance for that type works.
 
@@ -16,6 +14,7 @@ The `Compose` data type is [part of base](http://hackage.haskell.org/package/bas
 > :t Compose a
 > Compose a :: Num a => Compose (Either a2) Maybe a
 ```
+
 _Any code that starts with `>` is meant to be run in a repl, such as `stack ghci` or `ghci`._
 
 Here we took two functors (a `Maybe` and an `Either`) and composed them, giving us a new functor! Why is that useful?
@@ -58,6 +57,7 @@ instance (Applicative fa, Applicative fb) =>
   Compose x <*> Compose y =
     Compose ((<*>) <$> x <*> y)
 ```
+
 _Functor types are named fa, fb, and so on. If you see an f, it's a function, both on the type and the data level. I refer to fa and fb as functors since the applicative type class requires those things to be functors._
 
 As is often the case with Haskell, the code is really concise. In a single line we're dealing with three operators and one of them is the very operator we're defining for `Compose` (`<*>`). While that kind of code is a joy to read and write if you're fluent in all things functor and applicative, it's a mouthful if you're trying to improve your understanding of these topics.
