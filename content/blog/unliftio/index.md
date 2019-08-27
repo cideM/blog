@@ -128,7 +128,13 @@ instance MonadUnliftIO m => MonadUnliftIO (ReaderT r m) where
 
 The `withRunInIO` function removes a bit of the plumbing that `askUnliftIO` requires and let's you write code that is even more concise than `askUnliftIO` (as can be seen from the example at the end of the first chapter).
 
-Its function signature is `((forall a. m a -> IO a) -> IO b) -> m b`, but for simplicity's sake I won't include the `forall` part in future references to the signature. As you can see, it takes only a single argument, which is a callback.
+Its function signature is
+
+```haskell
+((forall a. m a -> IO a) -> IO b) -> m b
+```
+
+but for simplicity's sake I won't include the `forall` part in future references to the signature. As you can see, it takes only a single argument, which is a callback.
 
 Just as with `askUnliftIO`, the `IO` instance is pretty boring, so we'll jump straight to our familiar `ReaderT`.
 
@@ -199,4 +205,4 @@ Hopefully it's easy to see the familiar pattern of passing a callback to `withRu
 
 [^1]: `IO` also occurs in positive position.
 [^2]: Technically the `liftIO` isn't necessary for this specific use case. Since we're in the `IO` monad anyway, `liftIO` is superfluous here.
-[^3]: `foo :: _; foo s = s ++ s` gives `Found type wildcard ‘_’ standing for ‘[a] -> [a]’` which we can then use in the signature.
+[^3]: `foo :: _; foo s = s ++ s` gives "Found type wildcard ‘\_’ standing for ‘[a] -> [a]’" which we can then use in the signature.

@@ -1,20 +1,20 @@
 import Typography from 'typography'
 
 const typography = new Typography({
-  baseFontSize: '18px',
+  baseFontSize: '16px',
   baseLineHeight: 1.4,
   googleFonts: [
     {
-      name: 'Oswald',
-      styles: ['400', '500'],
+      name: 'IBM Plex Sans',
+      styles: ['400', '500', '400i'],
     },
     {
-      name: 'Vollkorn',
-      styles: ['400', '400i', '700'],
+      name: 'IBM Plex Mono',
+      styles: ['400'],
     },
   ],
-  bodyFontFamily: ['Vollkorn'],
-  headerFontFamily: ['Oswald'],
+  bodyFontFamily: ['IBM Plex Sans'],
+  headerFontFamily: ['IBM Plex Sans'],
 })
 
 export default typography

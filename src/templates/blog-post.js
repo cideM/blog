@@ -2,19 +2,31 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Link from '../components/Link'
 import Anchor from '../components/Anchor'
-import Bio from '../components/Bio'
+import Padding from '../components/Padding'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { rhythm, scale } from '../utils/typography'
 
+const hrStyle = css`
+  margin-bottom: rhythm(1);
+  background: ${props => props.theme.gradients.a};
+  height: ${rhythm(1 / 8)};
+`
+
 const Post = styled.div`
+  & hr {
+    ${hrStyle}
+  }
+
   & code {
-    font-family: Roboto Mono, monospace;
+    font-family: IBM Plex Mono, monospace;
+    ${scale(-0.25)};
   }
 
   & h2 {
     margin-bottom: ${rhythm(0.5)};
+    ${scale(0)};
     margin-top: 0;
   }
 
@@ -44,12 +56,33 @@ const Post = styled.div`
   }
 
   & blockquote {
+    p {
+      margin: 0;
+    }
+
     font-style: italic;
     margin: 0;
-    padding: ${rhythm(1)};
-    border-left: 10px solid ${props => props.theme.colors.brand};
+    padding: ${rhythm(1 / 4)};
+    padding-left: ${rhythm(1)};
     margin-bottom: ${rhythm(1)};
+    position: relative;
+
+    &::before {
+      position: absolute;
+      content: '';
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: ${rhythm(1 / 3)};
+      background: ${props => props.theme.gradients.a};
+    }
   }
+`
+
+const HR = styled.hr`
+  margin-bottom: rhythm(1);
+  background: ${props => props.theme.gradients.a};
+  height: ${rhythm(1 / 8)};
 `
 
 class BlogPostTemplate extends React.Component {
@@ -63,26 +96,21 @@ class BlogPostTemplate extends React.Component {
         <SEO title={post.frontmatter.title} description={post.excerpt} />
         <h1
           css={`
-            margin-top: ${rhythm(1.5)};
-            margin-bottom: 0;
+            margin-bottom: ${rhythm(1 / 4)};
+            text-align: center;
           `}
         >
           {post.frontmatter.title}
         </h1>
         <p
           css={`
-            margin-top: ${rhythm(1 / 2)};
-            margin-bottom: ${rhythm(1)};
+            text-align: center;
           `}
         >
           {post.frontmatter.date}
         </p>
         <Post dangerouslySetInnerHTML={{ __html: post.html }} />
-        <hr
-          style={{
-            marginBottom: rhythm(1),
-          }}
-        />
+        <HR />
         <p
           css={`
             font-style: italic;
