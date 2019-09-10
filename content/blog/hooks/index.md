@@ -1,5 +1,5 @@
 ---
-title: Hooks are Different
+title: React Hooks are Tricky
 date: '2019-07-15'
 publish: true
 ---
@@ -197,9 +197,12 @@ The parent holds a counter, but it doesn't pass the current count down to the ch
 
 ```js
 const [state, setState] = useState(0)
-const increment = useCallback(() => {
-  setState(state + 1)
-}, [state])
+const increment = useCallback(
+  () => {
+    setState(state + 1)
+  },
+  [state]
+)
 
 return (
   <div>
