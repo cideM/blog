@@ -36,9 +36,11 @@ class BlogIndex extends React.Component {
                 margin-bottom: ${rhythm(2)};
               `}
             >
-              <h3
+              <h2
                 css={`
                   margin: 0;
+                  margin-top: ${rhythm(1 / 2)};
+                  font-weight: 500;
                 `}
               >
                 <Link
@@ -47,16 +49,21 @@ class BlogIndex extends React.Component {
                 >
                   {title}
                 </Link>
-              </h3>
+              </h2>
+              <p
+                css={`
+                  margin: 0;
+                  margin-top: ${rhythm(1 / 4)};
+                `}
+                dangerouslySetInnerHTML={{ __html: node.excerpt }}
+              />
               <div
                 css={`
-                  margin-bottom: ${rhythm(1 / 4)};
-                  margin-top: ${rhythm(1 / 4)};
+                  margin-top: ${rhythm(1 / 2)};
                 `}
               >
                 <small>{node.frontmatter.date}</small>
               </div>
-              <p dangerouslySetInnerHTML={{ __html: node.excerpt }} />
             </div>
           )
         })}

@@ -20,14 +20,19 @@ const Post = styled.div`
   }
 
   & code {
-    font-family: IBM Plex Mono, monospace;
-    ${scale(-0.25)};
+    font-family: Roboto Mono, monospace;
   }
 
   & h2 {
-    margin-bottom: ${rhythm(0.5)};
-    ${scale(0)};
-    margin-top: 0;
+    margin-bottom: 0;
+    margin-top: ${rhythm(2.75)};
+    font-weight: 500;
+  }
+
+  & h3 {
+    margin-bottom: 0;
+    margin-top: ${rhythm(2)};
+    font-weight: 500;
   }
 
   & pre {
@@ -36,10 +41,11 @@ const Post = styled.div`
     float: left;
     padding-top: ${rhythm(0.5)};
     padding-bottom: ${rhythm(0.5)};
+    ${scale(-0.25)};
   }
 
   & p {
-    margin-bottom: ${rhythm(1)};
+    margin: ${rhythm(1)} 0;
   }
 
   & .gatsby-highlight {
@@ -53,6 +59,10 @@ const Post = styled.div`
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  & strong {
+    font-weight: 500;
   }
 
   & blockquote {
@@ -96,7 +106,10 @@ class BlogPostTemplate extends React.Component {
         <SEO title={post.frontmatter.title} description={post.excerpt} />
         <h1
           css={`
-            margin-bottom: ${rhythm(1 / 4)};
+            margin-top: ${rhythm(1)};
+            ${scale(1.25)};
+            font-weight: 500;
+            margin-bottom: ${rhythm(1 / 2)};
             text-align: center;
           `}
         >

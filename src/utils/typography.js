@@ -1,20 +1,20 @@
 import Typography from 'typography'
 
 const typography = new Typography({
-  baseFontSize: '16px',
+  baseFontSize: '18px',
   baseLineHeight: 1.4,
   googleFonts: [
     {
-      name: 'IBM Plex Sans',
+      name: 'Roboto',
       styles: ['400', '500', '400i'],
     },
     {
-      name: 'IBM Plex Mono',
+      name: 'Roboto Mono',
       styles: ['400'],
     },
   ],
-  bodyFontFamily: ['IBM Plex Sans'],
-  headerFontFamily: ['IBM Plex Sans'],
+  bodyFontFamily: ['Roboto'],
+  headerFontFamily: ['Roboto'],
 })
 
 export default typography

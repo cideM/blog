@@ -29,12 +29,14 @@ const theme = {
 const RootHeader = styled.h2`
   height: ${rhythm(6)};
   margin: 0;
+  font-weight: 500;
   display: flex;
   align-items: center;
 `
 
 const PostHeader = styled.h3`
   height: ${rhythm(3)};
+  font-weight: 500;
   margin: 0;
   display: flex;
   align-items: center;
