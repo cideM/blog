@@ -91,7 +91,7 @@ class Layout extends React.Component {
           css={`
             margin-left: auto;
             margin-right: auto;
-            max-width: ${rhythm(28)};
+            max-width: ${rhythm(34)};
           `}
         >
           <GlobalStyle />
