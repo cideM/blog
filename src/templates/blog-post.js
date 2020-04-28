@@ -21,6 +21,7 @@ const Post = styled.div`
 
   & code {
     font-family: Roboto Mono, monospace;
+    ${scale(-0.2)};
   }
 
   & h2 {
@@ -41,7 +42,8 @@ const Post = styled.div`
     float: left;
     padding-top: ${rhythm(0.5)};
     padding-bottom: ${rhythm(0.5)};
-    ${scale(-0.25)};
+    line-height: 1rem;
+    ${scale(-0.2)};
   }
 
   & p {
