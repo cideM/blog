@@ -6,6 +6,7 @@ import Padding from '../components/Padding'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
 import styled, { css } from 'styled-components'
+import './prism-ghcolors.css'
 import { rhythm, scale } from '../utils/typography'
 
 const hrStyle = css`
