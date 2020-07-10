@@ -8,8 +8,8 @@ import { rhythm, scale } from '../utils/typography'
 
 const GlobalStyle = createGlobalStyle`
   body {
-    color: ${props => props.theme.colors.text.normal};
-    background: ${props => props.theme.colors.background};
+    color: ${(props) => props.theme.colors.text.normal};
+    background: ${(props) => props.theme.colors.background};
   }
 `
 
@@ -58,20 +58,20 @@ const RootLink = ({ children }) => (
 
 const Header = ({ isRootPath, children }) =>
   isRootPath ? (
-    <div
-      css={`
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      `}
-    >
-      <RootHeader>
-        <Padding>
+    <Padding>
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        `}
+      >
+        <RootHeader>
           <RootLink>{children}</RootLink>
-        </Padding>
-      </RootHeader>
-      <Bio />
-    </div>
+        </RootHeader>
+        <Bio />
+      </div>
+    </Padding>
   ) : (
     <PostHeader>
       <Padding>
@@ -109,7 +109,7 @@ class Layout extends React.Component {
             <p
               css={`
                 margin: 0;
-                color: ${props => props.theme.colors.text.dimmed};
+                color: ${(props) => props.theme.colors.text.dimmed};
               `}
             >
               Built with <Anchor href="https://www.gatsbyjs.org">Gatsby</Anchor>
